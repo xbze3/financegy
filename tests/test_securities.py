@@ -1,5 +1,4 @@
 from financegy import *
-from bs4 import BeautifulSoup
 
 def test_get_securities():
     result = get_securities()
