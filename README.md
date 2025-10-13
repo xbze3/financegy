@@ -7,8 +7,6 @@ It provides a simple and consistent interface for retrieving information on trad
 
 ## Installation
 
-_(Once published on PyPI)_
-
 ```bash
 pip install financegy
 ```
