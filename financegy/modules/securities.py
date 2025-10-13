@@ -52,4 +52,3 @@ def get_security_session(symbol: str, session: str):
     path = f"/financial_session/{session}/"
     html = request_handler.fetch_page(path)
     return parser.parse_get_security_session(symbol, html)
-    
