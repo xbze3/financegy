@@ -43,3 +43,13 @@ def get_securites_session(session: str):
     path = f"/financial_session/{session}/"
     html = request_handler.fetch_page(path)
     return parser.parse_get_securites_session(html)
+
+def get_security_session(symbol: str, session: str):
+    """Get the session trade data for a given security"""
+
+    symbol = symbol.strip().upper()
+
+    path = f"/financial_session/{session}/"
+    html = request_handler.fetch_page(path)
+    return parser.parse_get_security_session(symbol, html)
+    
