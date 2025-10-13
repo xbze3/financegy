@@ -1,7 +1,6 @@
 # 🏦 FinanceGY
 
-**FinanceGY** is an **unofficial Python library** for accessing financial data from the **Guyana Stock Exchange (GSE)**.  
-It provides a simple and consistent interface for retrieving information on traded securities, recent trade data, and session details, all programmatically.
+**FinanceGY** is an **unofficial Python library** for accessing financial data from the \*\*Guyana Stock Exchange (GSE). It provides a simple and consistent interface for retrieving information on traded securities, recent trade data, and session details, all programmatically.
 
 ---
 
