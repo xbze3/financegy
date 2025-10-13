@@ -101,3 +101,40 @@ def parse_get_security_recent(html: str):
     except Exception as e:
         print(f"[parse_get_security_recent] Error parsing HTML: {e}")
         return None
+    
+def parse_get_securites_session(html: str):
+    """Extract session data for all securities"""
+
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+
+        sessions_info_html = soup.find("div", class_="session")
+        if not sessions_info_html:
+            raise ValueError("Could not find 'div.session' section in HTML.")
+
+        sessions = sessions_info_html.find_all("tr", class_="trade")
+        if not sessions:
+            raise ValueError("No session data found.")
+
+        def safe_text(parent, class_name):
+            cell = parent.find("td", class_=class_name)
+            return cell.get_text(strip=True) if cell else None
+
+        session_data = []
+
+        for session in sessions:
+            session_data.append({
+            "symbol": safe_text(session, "mnemonic"),
+            "ltp": safe_text(session, "name"),
+            "best_bid": safe_text(session, "best bid"),
+            "vol_bid": safe_text(session, "vol bid"),
+            "best_offer": safe_text(session, "best offer"),
+            "vol_offer": safe_text(session, "vol offer"),
+            "opening_price": safe_text(session, "opening price"),
+            })
+
+        return session_data
+    
+    except Exception as e:
+        print(f"[parse_get_securities_session] Error parsing HTML: {e}")
+        return None

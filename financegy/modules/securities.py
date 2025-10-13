@@ -18,6 +18,8 @@ def get_security_by_symbol(symbol: str):
     )
 
 def get_security_recent_year(symbol:str):
+    """Get the most recent year's trade data for any of the traded securities"""
+
     security_name = get_security_by_symbol(symbol)
     security_name = security_name.lower().replace(" ", "-")
 
@@ -35,3 +37,9 @@ def get_security_recent(symbol: str):
     html = request_handler.fetch_page(path)
     return parser.parse_get_security_recent(html)
 
+def get_securites_session(session: str):
+    """Get the session trade data for all the available securities"""
+
+    path = f"/financial_session/{session}/"
+    html = request_handler.fetch_page(path)
+    return parser.parse_get_securites_session(html)
