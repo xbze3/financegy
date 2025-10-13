@@ -1,6 +1,5 @@
 from financegy.core import request_handler, parser
 
-
 def get_securities():
     """Get names of all currently traded securities"""
     path = "/securities/"
