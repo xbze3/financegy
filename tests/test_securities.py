@@ -8,5 +8,6 @@ for security in securities:
 
 # Only print a certain security
 for security in securities:
-    if security["acronym"] == "DIH":
+    if security["symbol"] == "DIH":
+        print("\n")
         print(security)

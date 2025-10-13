@@ -14,11 +14,11 @@ def parse_get_securities(html: str):
         securities = security_info_html.find_all("div", class_="security group")
 
         for security in securities:
-            acronym = security.find_all("div", class_="acronym inline")[0].get_text(strip=True)
+            symbol = security.find_all("div", class_="acronym inline")[0].get_text(strip=True)
             name = security.find_all("div", class_="name inline")[0].get_text(strip=True)
 
             security_info.append({
-                "acronym": acronym,
+                "symbol": symbol,
                 "name": name
             })
 
