@@ -1,6 +1,6 @@
 # 🏦 FinanceGY
 
-**FinanceGY** is an **unofficial Python library** for accessing financial data from the \*\*Guyana Stock Exchange (GSE). It provides a simple and consistent interface for retrieving information on traded securities, recent trade data, and session details, all programmatically.
+**FinanceGY** is an unofficial Python library for accessing financial data from the **Guyana Stock Exchange (GSE)**. It provides a simple and consistent interface for retrieving information on traded securities, recent trade data, and session details, all programmatically.
 
 ---
 
@@ -30,10 +30,10 @@ recent = financegy.get_security_recent("DDL")
 recent_year = financegy.get_security_recent_year("DDL")
 
 # Get trade data for a specific trading session
-session_data = financegy.get_securites_session("2024-12-15")
+session_data = financegy.get_securites_session("1136")
 
 # Get session trade data for a specific security
-security_session = financegy.get_security_session("DDL", "2024-12-15")
+security_session = financegy.get_security_session("DDL", "1136")
 ```
 
 ---
