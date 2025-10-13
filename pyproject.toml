@@ -1,0 +1,12 @@
+[project]
+name = "financegy"
+version = "0.1.0"
+description = "Unofficial Python library for accessing Gaskii fund data"
+authors = [{ name = "Ezra Minty", email = "ezranminty@gmail.com" }]
+dependencies = ["requests", "beautifulsoup4"]
+readme = "README.md"
+license = { text = "MIT" }
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
