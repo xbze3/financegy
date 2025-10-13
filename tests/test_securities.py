@@ -1,13 +1,5 @@
-from financegy.modules.securities import get_securities
+from financegy import get_securities
 
-securities = get_securities()
-
-# Print all securities
-for security in securities:
-    print(security)
-
-# Only print a certain security
-for security in securities:
-    if security["symbol"] == "DIH":
-        print("\n")
-        print(security)
+def test_get_securities():
+    securities = get_securities()
+    assert isinstance(securities, list)
