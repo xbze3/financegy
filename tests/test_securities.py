@@ -24,6 +24,3 @@ def test_get_securites_session():
 def test_get_security_session():
     result = get_security_session(symbol="ddl", session="1136")
     assert isinstance(result, (dict, type(None)))
-    
-    
-
