@@ -6,3 +6,32 @@ def get_securities():
     html = request_handler.fetch_page(path)
     return parser.parse_get_securities(html);
 
+def get_security_by_symbol(symbol: str):
+    """Get the security details by its ticker symbol"""
+    securities = get_securities()
+
+    symbol = symbol.strip().upper()
+
+    return next(
+        (security['name'] for security in securities if security["symbol"].upper() == symbol),
+        None,
+    )
+
+def get_security_recent_year(symbol:str):
+    security_name = get_security_by_symbol(symbol)
+    security_name = security_name.lower().replace(" ", "-")
+
+    path = "/security/" + security_name
+    html = request_handler.fetch_page(path)
+    return parser.parse_get_security_recent_year(html)
+
+def get_security_recent(symbol: str):
+    """Get the most recent trade data for any of the traded securities"""
+    
+    security_name = get_security_by_symbol(symbol)
+    security_name = security_name.lower().replace(" ", "-")
+
+    path = "/security/" + security_name
+    html = request_handler.fetch_page(path)
+    return parser.parse_get_security_recent(html)
+

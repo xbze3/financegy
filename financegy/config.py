@@ -1,4 +1,4 @@
-from financegy import __version__
+__version__ = "0.1.0"
 
 BASE_URL = "https://guyanastockexchangeinc.com"
 HEADERS = {

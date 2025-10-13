@@ -2,14 +2,11 @@
 
 from importlib.metadata import version, PackageNotFoundError
 
-try:
-    __version__ = version("financegy")
-except PackageNotFoundError:
-    __version__ = "0.1.0"
-
-from financegy.modules.securities import get_securities
+from financegy.modules.securities import get_securities, get_security_by_symbol, get_security_recent, get_security_recent_year
 
 __all__ = [
     "get_securities",
-    "__version__",
+    "get_security_by_symbol",
+    "get_security_recent",
+    "get_security_recent_year",
 ]
