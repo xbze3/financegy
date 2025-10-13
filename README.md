@@ -68,7 +68,7 @@ Retrieves trade data for a specific security in a given trading session.
 
 ## License
 
-This project is licensed under the **MIT License** — allowing modification, redistribution, and commercial use with proper credit.
+This project is licensed under the **MIT License**
 
 ---
 
