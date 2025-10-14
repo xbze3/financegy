@@ -8,18 +8,18 @@ def test_get_security_by_symbol():
     result = get_security_by_symbol(symbol="ddl")
     assert isinstance(result, (str, type(None)))
 
-def test_get_security_recent():
-    result = get_security_recent(symbol="ddl")
+def test_get_recent_trade():
+    result = get_recent_trade(symbol="ddl")
     assert isinstance(result, (dict, type(None)))
 
 def test_get_security_recent_year():
     result = get_security_recent_year(symbol="ddl")
     assert isinstance(result, (list, type(None)))
     
-def test_get_securites_session():
-    result = get_securites_session(session="1136")
+def test_get_session_trades():
+    result = get_session_trades(session="1136")
     assert isinstance(result, (list, type(None)))
 
-def test_get_security_session():
-    result = get_security_session(symbol="ddl", session="1136")
+def test_get_security_session_trade():
+    result = get_security_session_trade(symbol="ddl", session="1136")
     assert isinstance(result, (dict, type(None)))

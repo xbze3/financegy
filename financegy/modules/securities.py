@@ -27,7 +27,7 @@ def get_security_recent_year(symbol:str):
     html = request_handler.fetch_page(path)
     return parser.parse_get_security_recent_year(html)
 
-def get_security_recent(symbol: str):
+def get_recent_trade(symbol: str):
     """Get the most recent trade data for any of the traded securities"""
     
     security_name = get_security_by_symbol(symbol)
@@ -35,20 +35,20 @@ def get_security_recent(symbol: str):
 
     path = "/security/" + security_name
     html = request_handler.fetch_page(path)
-    return parser.parse_get_security_recent(html)
+    return parser.parse_get_recent_trade(html)
 
-def get_securites_session(session: str):
+def get_session_trades(session: str):
     """Get the session trade data for all the available securities"""
 
     path = f"/financial_session/{session}/"
     html = request_handler.fetch_page(path)
-    return parser.parse_get_securites_session(html)
+    return parser.parse_get_session_trades(html)
 
-def get_security_session(symbol: str, session: str):
+def get_security_session_trade(symbol: str, session: str):
     """Get the session trade data for a given security"""
 
     symbol = symbol.strip().upper()
 
     path = f"/financial_session/{session}/"
     html = request_handler.fetch_page(path)
-    return parser.parse_get_security_session(symbol, html)
+    return parser.parse_get_security_session_trade(symbol, html)

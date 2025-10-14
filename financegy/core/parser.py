@@ -66,7 +66,7 @@ def parse_get_security_recent_year(html: str):
         print(f"[parse_get_security_recent_year] Error parsing HTML: {e}")
         return None
 
-def parse_get_security_recent(html: str):
+def parse_get_recent_trade(html: str):
     """Extract selected security's most recent trade info"""
     try:
         soup = BeautifulSoup(html, "html.parser")
@@ -102,7 +102,7 @@ def parse_get_security_recent(html: str):
         print(f"[parse_get_security_recent] Error parsing HTML: {e}")
         return None
     
-def parse_get_securites_session(html: str):
+def parse_get_session_trades(html: str):
     """Extract session data for all securities"""
 
     try:
@@ -139,7 +139,7 @@ def parse_get_securites_session(html: str):
         print(f"[parse_get_securities_session] Error parsing HTML: {e}")
         return None
     
-def parse_get_security_session(symbol: str, html: str):
+def parse_get_security_session_trade(symbol: str, html: str):
     """Extract session data for given security"""
 
     try:
