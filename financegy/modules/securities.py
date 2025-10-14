@@ -65,3 +65,14 @@ def search_securities(query: str):
     ]
 
     return matches
+
+def get_trades_for_year(symbol: str, year: str):
+    """Get security trade information from a specific year"""
+
+    symbol = symbol.strip().upper()
+
+    security_name = get_security_by_symbol(symbol)
+    security_name = security_name.lower().replace(" ", "-")
+
+    path = f"https://guyanastockexchangeinc.com/security/{security_name}/"
+    return parser.parse_get_trades_for_year(year, path)

@@ -27,3 +27,7 @@ from financegy import *
 # def test_search_securities():
 #     result = search_securities(query="ddl")
 #     assert isinstance(result, list)
+
+# def test_get_trades_for_year():
+#     result = get_trades_for_year(symbol="ddl", year="2019")
+#     assert isinstance(result, list)

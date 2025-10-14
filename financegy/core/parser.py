@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 
 def parse_get_securities(html: str):
     """Extract security info"""
@@ -177,3 +178,40 @@ def parse_get_security_session_trade(symbol: str, html: str):
     except Exception as e:
         print(f"[parse_get_security_session] Error parsing HTML: {e}")
         return None
+    
+def parse_get_trades_for_year(year: str, path: str):
+    """Get security trade information from a specific year"""
+
+    trades = []
+
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(path, timeout=30000) 
+
+            page.wait_for_selector("div.slide", timeout=10000)
+
+            year_div = page.locator('div.slide', has_text=year).first
+            if not year_div:
+                print(f"[ERROR] No div found for year: {year}")
+                return trades
+
+            year_div.click()
+            page.wait_for_timeout(500)
+            page.wait_for_selector("div.year.slide", timeout=10000)
+
+            html = page.content()
+            trades = parse_get_security_recent_year(html)
+
+    except PlaywrightTimeoutError as e:
+        print(f"[TIMEOUT ERROR] Page or element took too long to load: {e}")
+    except Exception as e:
+        print(f"[ERROR] Failed to get trades for year {year}: {e}")
+    finally:
+        try:
+            browser.close()
+        except Exception:
+            pass
+
+    return trades

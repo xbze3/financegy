@@ -9,7 +9,8 @@ from financegy.modules.securities import(
     get_security_recent_year,
     get_session_trades,
     get_security_session_trade,
-    search_securities
+    search_securities,
+    get_trades_for_year
 )
 
 __all__ = [
@@ -19,5 +20,6 @@ __all__ = [
     "get_security_recent_year",
     "get_session_trades",
     "get_security_session_trade",
-    "search_securities"
+    "search_securities",
+    "get_trades_for_year"
 ]
