@@ -1,7 +1,8 @@
 import os, json, hashlib
 from datetime import datetime, timedelta
 
-CACHE_DIR = "cache"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CACHE_DIR = os.path.join(SCRIPT_DIR, "cache")
 
 def make_cache_key(func_name, *args, **kwargs):
     """Create a unique hash for the given function call."""
