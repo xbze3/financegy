@@ -14,6 +14,8 @@ from financegy.modules.securities import(
     get_historical_trades
 )
 
+from financegy.cache.cache_manager import clear_cache
+
 __all__ = [
     "get_securities",
     "get_security_by_symbol",
@@ -23,5 +25,6 @@ __all__ = [
     "get_security_session_trade",
     "search_securities",
     "get_trades_for_year",
-    "get_historical_trades"
+    "get_historical_trades",
+    "clear_cache"
 ]

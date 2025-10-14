@@ -1,5 +1,6 @@
 import os, json, hashlib
 from datetime import datetime, timedelta
+import shutil
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 CACHE_DIR = os.path.join(SCRIPT_DIR, "cache")
@@ -45,3 +46,17 @@ def save_cache(func_name, value, *args, **kwargs):
             "timestamp": datetime.now().isoformat(),
             "value": value
         }, f)
+
+def clear_cache():
+    """Completely clears the FinanceGY cache directory."""
+    if not os.path.exists(CACHE_DIR):
+        print("No cache directory found.")
+        return False
+
+    try:
+        shutil.rmtree(CACHE_DIR)
+        print("Cache cleared successfully.")
+        return True
+        
+    except Exception as e:
+        print(f"Failed to clear cache: {e}")
