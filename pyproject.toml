@@ -3,7 +3,7 @@ name = "financegy"
 version = "0.1.0"
 description = "Unofficial Python library for accessing Gaskii (Guyana Stock Exchange) financial data"
 authors = [{ name = "Ezra Minty", email = "ezranminty@gmail.com" }]
-dependencies = ["requests", "beautifulsoup4", "playwright"]
+dependencies = ["requests", "beautifulsoup4"]
 readme = "README.md"
 license = { text = "MIT" }
 

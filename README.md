@@ -24,45 +24,70 @@ securities = financegy.get_securities()
 security_name = financegy.get_security_by_symbol("DDL")
 
 # Get the most recent trade data for a security
-recent = financegy.get_security_recent("DDL")
+recent_trade = financegy.get_recent_trade("DDL")
 
 # Get all trade data for the most recent year
 recent_year = financegy.get_security_recent_year("DDL")
 
 # Get trade data for a specific trading session
-session_data = financegy.get_securites_session("1136")
+session_trades = financegy.get_session_trades("1136")
 
 # Get session trade data for a specific security
-security_session = financegy.get_security_session("DDL", "1136")
+security_session_trade = financegy.get_security_session_trade("DDL", "1136")
+
+# Search for securities by name or symbol
+search_results = financegy.search_securities("DDL")
+
+# Get all trades for a given year
+year_trades = financegy.get_trades_for_year("DDL", "2019")
+
+# Get historical trades within a date range (dd/mm/yyyy)
+historical_trades = financegy.get_historical_trades(
+    symbol="DDL",
+    start_date="01/06/2020",
+    end_date="01/01/2022"
+)
 ```
 
 ---
 
 ## Function Overview
 
-### `get_securities()`
+#### `get_securities()`
 
 Returns a list of all currently traded securities on the Guyana Stock Exchange.
 
-### `get_security_by_symbol(symbol: str)`
+#### `get_security_by_symbol(symbol: str)`
 
 Retrieves the full name of a security using its ticker symbol (e.g., `"DDL"` → `"Demerara Distillers Limited"`).
 
-### `get_security_recent(symbol: str)`
+#### `get_recent_trade(symbol: str)`
 
 Returns the most recent trade information for the given security.
 
-### `get_security_recent_year(symbol: str)`
+#### `get_security_recent_year(symbol: str)`
 
 Fetches all trade data for the most recent year of the selected security.
 
-### `get_securites_session(session: str)`
+#### `get_session_trades(session: str)`
 
 Retrieves trade data for _all_ securities during a specific trading session.
 
-### `get_security_session(symbol: str, session: str)`
+#### `get_security_session_trade(symbol: str, session: str)`
 
 Retrieves trade data for a specific security in a given trading session.
+
+#### `search_securities(query: str)`
+
+Searches for securities whose names or ticker symbols match the given query.
+
+#### `get_trades_for_year(symbol: str, year: str)`
+
+Returns all trade records for a specific security during a given year.
+
+#### `get_historical_trades(symbol: str, start_date: str, end_date: str)`
+
+Fetches historical trade data for a security within the specified date range (`dd/mm/yyyy` format).
 
 ---
 

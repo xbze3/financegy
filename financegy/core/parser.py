@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
+from datetime import datetime
 
 def parse_get_securities(html: str):
     """Extract security info"""
@@ -179,39 +179,100 @@ def parse_get_security_session_trade(symbol: str, html: str):
         print(f"[parse_get_security_session] Error parsing HTML: {e}")
         return None
     
-def parse_get_trades_for_year(year: str, path: str):
+def parse_get_trades_for_year(year: str, html: str):
     """Get security trade information from a specific year"""
 
-    trades = []
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+
+        security_info_html = soup.find("div", class_="year slide", id=year)
+        if not security_info_html:
+            raise ValueError("Could not find 'div.year.slide' section in HTML.")
+        
+        trade_data = []
+
+        trades = security_info_html.find_all("tr", class_="trade")
+        if not trades:
+            raise ValueError("No trade rows found for this security.")
+        
+        def safe_text(parent, class_name):
+            cell = parent.find("td", class_=class_name)
+            return cell.get_text(strip=True) if cell else None
+        
+        for trade in trades:
+            trade_data.append({
+            "session": safe_text(trade, "session"),
+            "date": safe_text(trade, "date"),
+            "ltp": safe_text(trade, "name"),
+            "best_bid": safe_text(trade, "best bid"),
+            "vol_bid": safe_text(trade, "vol bid"),
+            "best_offer": safe_text(trade, "best offer"),
+            "vol_offer": safe_text(trade, "vol offer"),
+            "opening_price": safe_text(trade, "opening price"),
+            })
+
+        return trade_data
+    
+    except Exception as e:
+        print(f"[parse_get_security_recent_year] Error parsing HTML: {e}")
+        return None
+
+
+def parse_get_historical_trades(start_date: str, end_date: str, html: str):
+    """Parse historical trade data from HTML between given dates (DD/MM/YYYY)"""
 
     try:
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            page = browser.new_page()
-            page.goto(path, timeout=30000) 
+        start = datetime.strptime(start_date, "%d/%m/%Y")
+        end = datetime.strptime(end_date, "%d/%m/%Y")
 
-            page.wait_for_selector("div.slide", timeout=10000)
+        soup = BeautifulSoup(html, "html.parser")
 
-            year_div = page.locator('div.slide', has_text=year).first
-            if not year_div:
-                print(f"[ERROR] No div found for year: {year}")
-                return trades
+        year_sections = soup.find_all("div", class_="year slide")
+        if not year_sections:
+            raise ValueError("No 'div.year.slide' sections found in HTML.")
 
-            year_div.click()
-            page.wait_for_timeout(500)
-            page.wait_for_selector("div.year.slide", timeout=10000)
+        trade_data = []
 
-            html = page.content()
-            trades = parse_get_security_recent_year(html)
+        def safe_text(parent, class_name):
+            cell = parent.find("td", class_=class_name)
+            return cell.get_text(strip=True) if cell else None
 
-    except PlaywrightTimeoutError as e:
-        print(f"[TIMEOUT ERROR] Page or element took too long to load: {e}")
+        for section in year_sections:
+            year_id = section.get("id")
+            if not year_id or not year_id.isdigit():
+                continue
+
+            year = int(year_id)
+            if year < start.year or year > end.year:
+                continue
+
+            trades = section.find_all("tr", class_="trade")
+            for trade in trades:
+                date_text = safe_text(trade, "date")
+                if not date_text:
+                    continue
+
+                try:
+                    trade_date = datetime.strptime(date_text, "%d/%m/%Y")
+                except ValueError:
+                    continue
+
+                if start <= trade_date <= end:
+                    trade_data.append({
+                        "session": safe_text(trade, "session"),
+                        "date": date_text,
+                        "ltp": safe_text(trade, "name"),
+                        "best_bid": safe_text(trade, "best bid"),
+                        "vol_bid": safe_text(trade, "vol bid"),
+                        "best_offer": safe_text(trade, "best offer"),
+                        "vol_offer": safe_text(trade, "vol offer"),
+                        "opening_price": safe_text(trade, "opening price"),
+                    })
+
+        trade_data.sort(key=lambda x: datetime.strptime(x["date"], "%d/%m/%Y"))
+
+        return trade_data
+
     except Exception as e:
-        print(f"[ERROR] Failed to get trades for year {year}: {e}")
-    finally:
-        try:
-            browser.close()
-        except Exception:
-            pass
-
-    return trades
+        print(f"[parse_get_historical_trades] Error parsing HTML: {e}")
+        return None

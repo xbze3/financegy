@@ -53,6 +53,33 @@ def get_security_session_trade(symbol: str, session: str):
     html = request_handler.fetch_page(path)
     return parser.parse_get_security_session_trade(symbol, html)
 
+
+def get_trades_for_year(symbol: str, year: str):
+    """Get security trade information from a specific year"""
+
+    symbol = symbol.strip().upper()
+
+    security_name = get_security_by_symbol(symbol)
+    security_name = security_name.lower().replace(" ", "-")
+
+    path = f"/security/{security_name}/"
+    html = request_handler.fetch_page(path)
+
+    return parser.parse_get_trades_for_year(year, html)
+
+def get_historical_trades(symbol: str, start_date: str, end_date: str):
+    """Get historical trade data for a date range"""
+
+    symbol = symbol.strip().upper()
+
+    security_name = get_security_by_symbol(symbol)
+    security_name = security_name.lower().replace(" ", "-")
+
+    path = f"/security/{security_name}/"
+    html = request_handler.fetch_page(path)
+
+    return parser.parse_get_historical_trades(start_date, end_date, html)
+
 def search_securities(query: str):
     """Search securities by symbol or name (partial match)"""
 
@@ -65,14 +92,3 @@ def search_securities(query: str):
     ]
 
     return matches
-
-def get_trades_for_year(symbol: str, year: str):
-    """Get security trade information from a specific year"""
-
-    symbol = symbol.strip().upper()
-
-    security_name = get_security_by_symbol(symbol)
-    security_name = security_name.lower().replace(" ", "-")
-
-    path = f"https://guyanastockexchangeinc.com/security/{security_name}/"
-    return parser.parse_get_trades_for_year(year, path)
