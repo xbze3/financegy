@@ -52,3 +52,16 @@ def get_security_session_trade(symbol: str, session: str):
     path = f"/financial_session/{session}/"
     html = request_handler.fetch_page(path)
     return parser.parse_get_security_session_trade(symbol, html)
+
+def search_securities(query: str):
+    """Search securities by symbol or name (partial match)"""
+
+    query = query.lower().strip()
+    all_securities = get_securities()
+
+    matches = [
+        sec for sec in all_securities
+        if query in sec["symbol"].lower() or query in sec["name"].lower()
+    ]
+
+    return matches
