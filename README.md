@@ -91,6 +91,38 @@ Fetches historical trade data for a security within the specified date range (`d
 
 ---
 
+## Caching System
+
+FinanceGY includes a lightweight local caching system designed to speed up repeated requests and reduce unnecessary calls to the Guyana Stock Exchange (GSE).
+
+Whenever you call a data retrieval function (such as `get_securities()` or `get_recent_trade()`), FinanceGY automatically checks whether a cached response already exists for that specific query:
+
+-   If a valid cache file (less than 7 days old) is found, the result is returned instantly from the cache.
+-   If the cache is missing, disabled, or older than one week, FinanceGY fetches fresh data from the GSE and updates the cache automatically.
+
+All cache files are stored in a local `cache/` directory as small JSON files containing the retrieved data and a timestamp. This ensures that frequently accessed data loads quickly while staying reasonably up to date.
+
+You can manually clear all cached data at any time:
+
+```python
+import financegy
+
+financegy.clear_cache()
+```
+
+This will delete all cached files and force the next data request to fetch fresh data directly from the source.
+
+If you prefer to **bypass the cache** for a specific call, simply pass `use_cache=False` to any function. For example:
+
+```python
+# Force a fresh fetch from the GSE, ignoring cached data
+recent_trade = financegy.get_recent_trade("DDL", use_cache=False)
+```
+
+By default, caching is enabled for all supported functions unless explicitly turned off.
+
+---
+
 ## License
 
 This project is licensed under the **MIT License**
