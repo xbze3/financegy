@@ -100,7 +100,7 @@ Whenever you call a data retrieval function (such as `get_securities()` or `get_
 -   If a valid cache file (less than 7 days old) is found, the result is returned instantly from the cache.
 -   If the cache is missing, disabled, or older than one week, FinanceGY fetches fresh data from the GSE and updates the cache automatically.
 
-All cache files are stored in a local `cache/` directory as small JSON files containing the retrieved data and a timestamp. This ensures that frequently accessed data loads quickly while staying reasonably up to date.
+All cache files are stored in a local `cache/` directory as small JSON files containing the retrieved data and a timestamp.
 
 You can manually clear all cached data at any time:
 
@@ -112,7 +112,7 @@ financegy.clear_cache()
 
 This will delete all cached files and force the next data request to fetch fresh data directly from the source.
 
-If you prefer to **bypass the cache** for a specific call, simply pass `use_cache=False` to any function. For example:
+If you prefer to bypass the cache for a specific call, simply pass `use_cache=False` to any function. For example:
 
 ```python
 # Force a fresh fetch from the GSE, ignoring cached data
