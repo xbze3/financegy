@@ -41,53 +41,38 @@ search_results = financegy.search_securities("DDL")
 # Get all trades for a given year
 year_trades = financegy.get_trades_for_year("DDL", "2019")
 
-# Get historical trades within a date range (dd/mm/yyyy)
+# Get historical trades within a date range - (yyyy) / (mm/yyyy) / (dd/mm/yyyy)
 historical_trades = financegy.get_historical_trades(
     symbol="DDL",
     start_date="01/06/2020",
-    end_date="01/01/2022"
+    end_date="01/2022"
 )
 ```
 
 ---
 
-## Function Overview
+## Data Retrieval
 
-#### `get_securities()`
+| Function                                                             | Description                                                                                                            |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `get_securities()`                                                   | Returns a list of all currently traded securities on the GSE.                                                          |
+| `get_security_by_symbol(symbol: str)`                                | Retrieves the full name of a security using its ticker symbol (e.g., `"DDL"` → `"Demerara Distillers Limited"`).       |
+| `get_recent_trade(symbol: str)`                                      | Returns the most recent trade information for the given security.                                                      |
+| `get_security_recent_year(symbol: str)`                              | Fetches all trade data for the most recent year of the selected security.                                              |
+| `get_session_trades(session: str)`                                   | Retrieves trade data for all securities during a specific trading session.                                             |
+| `get_security_session_trade(symbol: str, session: str)`              | Retrieves trade data for a specific security in a given trading session.                                               |
+| `search_securities(query: str)`                                      | Searches for securities whose names or ticker symbols match the given query.                                           |
+| `get_trades_for_year(symbol: str, year: str)`                        | Returns all trade records for a specific security during a given year.                                                 |
+| `get_historical_trades(symbol: str, start_date: str, end_date: str)` | Fetches historical trade data for a security within the specified date range (`dd/mm/yyyy`, `mm/yyyy`, `yyyy` format). |
 
-Returns a list of all currently traded securities on the Guyana Stock Exchange.
+---
 
-#### `get_security_by_symbol(symbol: str)`
+### Data Utilities
 
-Retrieves the full name of a security using its ticker symbol (e.g., `"DDL"` → `"Demerara Distillers Limited"`).
-
-#### `get_recent_trade(symbol: str)`
-
-Returns the most recent trade information for the given security.
-
-#### `get_security_recent_year(symbol: str)`
-
-Fetches all trade data for the most recent year of the selected security.
-
-#### `get_session_trades(session: str)`
-
-Retrieves trade data for _all_ securities during a specific trading session.
-
-#### `get_security_session_trade(symbol: str, session: str)`
-
-Retrieves trade data for a specific security in a given trading session.
-
-#### `search_securities(query: str)`
-
-Searches for securities whose names or ticker symbols match the given query.
-
-#### `get_trades_for_year(symbol: str, year: str)`
-
-Returns all trade records for a specific security during a given year.
-
-#### `get_historical_trades(symbol: str, start_date: str, end_date: str)`
-
-Fetches historical trade data for a security within the specified date range (`dd/mm/yyyy` format).
+| Function                                                            | Description                                                                                                                                        |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `to_dataframe(data: list[dict])`                                    | Converts a list (or dictionary) of trade data into a Pandas DataFrame for easy analysis. Raises `TypeError` if the data is not properly formatted. |
+| `save_to_csv(data, filename: str = "output.csv", path: str = None)` | Saves the given data to a CSV file. By default, the file is saved to the current working directory. Returns `True` after saving successfully.      |
 
 ---
 
@@ -97,7 +82,7 @@ FinanceGY includes a lightweight local caching system designed to speed up repea
 
 Whenever you call a data retrieval function (such as `get_securities()` or `get_recent_trade()`), FinanceGY automatically checks whether a cached response already exists for that specific query:
 
--   If a valid cache file (less than 7 days old since sessions are help once per week) is found, the result is returned instantly from the cache.
+-   If a valid cache file (less than 7 days old since sessions are held once per week) is found, the result is returned instantly from the cache.
 -   If the cache is missing, disabled, or older than one week, FinanceGY fetches fresh data from the GSE and updates the cache automatically.
 
 All cache files are stored in a local `cache/` directory as small JSON files containing the retrieved data and a timestamp.

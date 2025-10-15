@@ -30,7 +30,7 @@ import pandas as pd
 #     assert isinstance(result, (list, type(None)))
 
 # def test_get_historical_trades():
-#     result = get_historical_trades(symbol="ddl", start_date="01/06/2020", end_date="01/01/2022")
+#     result = get_historical_trades(symbol="ddl", start_date="06/2020", end_date="01/2022")
 #     assert isinstance(result, (list, type(None)))
 
 # def test_search_securities():

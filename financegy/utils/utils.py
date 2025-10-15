@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-def to_dataframe(data: list[dict]) -> pd.DataFrame:
+def to_dataframe(data: list[dict]):
     """Output as Dataframe"""
 
     if isinstance(data, list) and not all(isinstance(item, dict) for item in data):

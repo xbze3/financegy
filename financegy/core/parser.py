@@ -217,16 +217,37 @@ def parse_get_trades_for_year(year: str, html: str):
         print(f"[parse_get_security_recent_year] Error parsing HTML: {e}")
         return None
 
+from datetime import datetime
+from bs4 import BeautifulSoup
 
 def parse_get_historical_trades(start_date: str, end_date: str, html: str):
     """Parse historical trade data from HTML between given dates (DD/MM/YYYY)"""
 
+    def normalize_date(date_str: str) -> str:
+        parts = date_str.split("/")
+        if len(parts) == 1:
+            day, month, year = "01", "01", parts[0]
+        elif len(parts) == 2:
+            day, month, year = "01", parts[0], parts[1]
+        elif len(parts) == 3:
+            day, month, year = parts
+        else:
+            raise ValueError(f"Invalid date format: {date_str}")
+
+        try:
+            datetime(int(year), int(month), int(day))
+        except ValueError as e:
+            raise ValueError(f"Invalid date generated from {date_str}: {e}")
+
+        return f"{day.zfill(2)}/{month.zfill(2)}/{year}"
+
     try:
+        start_date = normalize_date(start_date)
+        end_date = normalize_date(end_date)
         start = datetime.strptime(start_date, "%d/%m/%Y")
         end = datetime.strptime(end_date, "%d/%m/%Y")
 
         soup = BeautifulSoup(html, "html.parser")
-
         year_sections = soup.find_all("div", class_="year slide")
         if not year_sections:
             raise ValueError("No 'div.year.slide' sections found in HTML.")
@@ -242,8 +263,8 @@ def parse_get_historical_trades(start_date: str, end_date: str, html: str):
             if not year_id or not year_id.isdigit():
                 continue
 
-            year = int(year_id)
-            if year < start.year or year > end.year:
+            year_int = int(year_id)
+            if year_int < start.year or year_int > end.year:
                 continue
 
             trades = section.find_all("tr", class_="trade")
@@ -270,7 +291,6 @@ def parse_get_historical_trades(start_date: str, end_date: str, html: str):
                     })
 
         trade_data.sort(key=lambda x: datetime.strptime(x["date"], "%d/%m/%Y"))
-
         return trade_data
 
     except Exception as e:
