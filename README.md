@@ -93,11 +93,11 @@ Fetches historical trade data for a security within the specified date range (`d
 
 ## Caching System
 
-FinanceGY includes a lightweight local caching system designed to speed up repeated requests and reduce unnecessary calls to the Guyana Stock Exchange (GSE).
+FinanceGY includes a lightweight local caching system designed to speed up repeated requests and reduce unnecessary calls.
 
 Whenever you call a data retrieval function (such as `get_securities()` or `get_recent_trade()`), FinanceGY automatically checks whether a cached response already exists for that specific query:
 
--   If a valid cache file (less than 7 days old) is found, the result is returned instantly from the cache.
+-   If a valid cache file (less than 7 days old since sessions are help once per week) is found, the result is returned instantly from the cache.
 -   If the cache is missing, disabled, or older than one week, FinanceGY fetches fresh data from the GSE and updates the cache automatically.
 
 All cache files are stored in a local `cache/` directory as small JSON files containing the retrieved data and a timestamp.
