@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "financegy"
-version = "1.3"
+version = "1.5"
 description = "Unofficial Python library for accessing GSE (Guyana Stock Exchange) financial data"
 authors = [{ name = "Ezra Minty", email = "ezranminty@gmail.com" }]
-dependencies = ["requests", "beautifulsoup4"]
+dependencies = ["requests", "beautifulsoup4", "pandas"]
 readme = "README.md"
 license = { text = "MIT" }
 

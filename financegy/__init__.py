@@ -15,6 +15,7 @@ from financegy.modules.securities import(
 )
 
 from financegy.cache.cache_manager import clear_cache
+from financegy.utils.utils import save_to_csv, to_dataframe
 
 __all__ = [
     "get_securities",
@@ -26,5 +27,7 @@ __all__ = [
     "search_securities",
     "get_trades_for_year",
     "get_historical_trades",
-    "clear_cache"
+    "clear_cache",
+    "save_to_csv",
+    "to_dataframe"
 ]
