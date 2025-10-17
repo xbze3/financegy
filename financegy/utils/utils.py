@@ -45,6 +45,7 @@ def save_to_excel(data: dict | list[dict], filename: str = "output.xlsx", path: 
     df.to_excel(full_path, index=False)
     
     print(f"Saved Excel Document to: {full_path}")
+    
     return True
 
 

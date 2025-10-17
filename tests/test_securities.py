@@ -46,6 +46,12 @@ import pandas as pd
 #     save_to_csv(result)
 #     assert isinstance(result, list)
 
+# def test_save_excel():
+#     result = get_securities()
+#     save_to_excel(result)
+#     assert isinstance(result, list)
+
+
 # def test_clear_cache():
 #     result = clear_cache()
 #     assert isinstance(result, bool)
