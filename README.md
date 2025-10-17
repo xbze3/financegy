@@ -69,10 +69,11 @@ historical_trades = financegy.get_historical_trades(
 
 ### Data Utilities
 
-| Function                                                            | Description                                                                                                                                        |
-| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `to_dataframe(data: list[dict])`                                    | Converts a list (or dictionary) of trade data into a Pandas DataFrame for easy analysis. Raises `TypeError` if the data is not properly formatted. |
-| `save_to_csv(data, filename: str = "output.csv", path: str = None)` | Saves the given data to a CSV file. By default, the file is saved to the current working directory. Returns `True` after saving successfully.      |
+| Function                                                               | Description                                                                                                                                              |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `to_dataframe(data)`                                                   | Converts a list (or dictionary) of trade data into a Pandas DataFrame for easy analysis. Raises `TypeError` if the data is not properly formatted.       |
+| `save_to_csv(data, filename: str = "output.csv", path: str = None)`    | Saves the given data to a CSV file. By default, the file is saved to the current working directory. Returns `True` after saving successfully.            |
+| `save_to_excel(data, filename: str = "output.xlsx", path: str = None)` | Saves the given data to an Excel `.xlsx` file. By default, the file is saved to the current working directory. Returns `True` after saving successfully. |
 
 ---
 
