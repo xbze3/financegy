@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-def to_dataframe(data: list[dict]):
+def to_dataframe(data: dict | list[dict]):
     """Output as Dataframe"""
 
     if isinstance(data, list) and not all(isinstance(item, dict) for item in data):
@@ -31,3 +31,21 @@ def save_to_csv(data, filename: str = "output.csv", path: str = None):
     print(f"Saved CSV to: {full_path}")
 
     return True
+
+def save_to_excel(data: dict | list[dict], filename: str = "output.xlsx", path: str = None):
+    """Save data to an Excel spreadsheet."""
+    
+    if path is None:
+        path = os.getcwd()
+    else:
+        path = os.path.abspath(path)
+
+    full_path = os.path.join(path, filename)
+    df = to_dataframe(data)
+    df.to_excel(full_path, index=False)
+    
+    print(f"Saved Excel Document to: {full_path}")
+    return True
+
+
+
