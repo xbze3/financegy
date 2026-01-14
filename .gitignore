@@ -7,3 +7,5 @@ dist/
 .eggs/
 cache/
 .pypirc
+*.csv
+*.xlsx
