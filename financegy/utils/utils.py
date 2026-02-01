@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 
+
 def to_dataframe(data: dict | list[dict]):
     """Output as Dataframe"""
 
@@ -8,11 +9,12 @@ def to_dataframe(data: dict | list[dict]):
         raise TypeError("All items in the list must be dictionaries")
     elif not isinstance(data, (dict, list)):
         raise TypeError("data must be a dict or a list of dicts")
-    
+
     if isinstance(data, dict):
-        data = [data]      
+        data = [data]
 
     return pd.DataFrame(data)
+
 
 def save_to_csv(data, filename: str = "output.csv", path: str = None):
     """Save a list of dicts to CSV"""
@@ -28,13 +30,16 @@ def save_to_csv(data, filename: str = "output.csv", path: str = None):
 
     df.to_csv(full_path, index=False)
 
-    print(f"Saved CSV to: {full_path}")
+    print(f"\nSaved CSV to: {full_path}")
 
     return True
 
-def save_to_excel(data: dict | list[dict], filename: str = "output.xlsx", path: str = None):
+
+def save_to_excel(
+    data: dict | list[dict], filename: str = "output.xlsx", path: str = None
+):
     """Save data to an Excel spreadsheet."""
-    
+
     if path is None:
         path = os.getcwd()
     else:
@@ -43,10 +48,7 @@ def save_to_excel(data: dict | list[dict], filename: str = "output.xlsx", path: 
     full_path = os.path.join(path, filename)
     df = to_dataframe(data)
     df.to_excel(full_path, index=False)
-    
-    print(f"Saved Excel Document to: {full_path}")
-    
+
+    print(f"\nSaved Excel Document to: {full_path}")
+
     return True
-
-
-
