@@ -47,12 +47,23 @@ import pandas as pd
 #     print(result)
 #     assert isinstance(result, (dict, type(None)))
 
-# test_get_average_price(symbol, days=30)
 
 # def test_get_sessions_average_price():
 #     result = get_sessions_average_price(
 #         symbol="ddl", session_start="1053", session_end="1060"
 #     )
+#     print(result)
+#     assert isinstance(result, (dict, type(None)))
+
+
+# def test_get_average_price():
+#     result = get_average_price(symbol="ddl", session_number=31)
+#     print(result)
+#     assert isinstance(result, (dict, type(None)))
+
+
+# def test_get_latest_session_for_symbol():
+#     result = get_latest_session_for_symbol(symbol="ddl")
 #     print(result)
 #     assert isinstance(result, (dict, type(None)))
 

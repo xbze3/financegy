@@ -223,7 +223,7 @@ def parse_get_price_change_percent(html: str):
         return price_change_percent
 
     except Exception as e:
-        print(f"[parse_get_price_change] Error parsing HTML: {e}")
+        print(f"[parse_get_price_change_percent] Error parsing HTML: {e}")
         return None
 
 
@@ -252,6 +252,37 @@ def parse_get_sessions_average_price(symbol: str, html: str):
 
         return None
 
+    except Exception as e:
+        print(f"[parse_get_sessions_average_price] Error parsing HTML: {e}")
+        return None
+
+
+def parse_get_average_price(symbol: str, html: str):
+    """
+    From a /financial_session/{session}/ page, return the last_trade_price (LTP)
+    for the given symbol. Returns None if not found/unparseable.
+    """
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+
+        session_div = soup.find("div", class_="session")
+        if not session_div:
+            raise ValueError("Could not find 'div.session' section in HTML.")
+
+        rows = session_div.find_all("tr", class_="trade")
+        if not rows:
+            raise ValueError("No trade rows found in session data.")
+
+        def safe_text(parent, class_name):
+            cell = parent.find("td", class_=class_name)
+            return cell.get_text(strip=True) if cell else None
+
+        for row in rows:
+            row_symbol = safe_text(row, "mnemonic")
+            if row_symbol == symbol:
+                return to_float(safe_text(row, "name"))
+
+        return None
     except Exception as e:
         print(f"[parse_get_average_price] Error parsing HTML: {e}")
         return None
