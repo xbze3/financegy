@@ -76,6 +76,11 @@ import pandas as pd
 #     assert isinstance(result, (list, type(None)))
 
 
+def test_get_sessions_volatility():
+    result = get_sessions_volatility(symbol="ddl", session_number=3)
+    print(result)
+
+
 # def test_search_securities():
 #     result = search_securities(query="ddl")
 #     assert isinstance(result, list)

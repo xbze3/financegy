@@ -288,6 +288,34 @@ def parse_get_average_price(symbol: str, html: str):
         return None
 
 
+def parse_get_session_ltp(symbol: str, html: str):
+    """From a /financial_session/{session}/ page, return LTP for symbol."""
+
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+
+        session_div = soup.find("div", class_="session")
+        if not session_div:
+            return None
+
+        rows = session_div.find_all("tr", class_="trade")
+        if not rows:
+            return None
+
+        def safe_text(parent, class_name):
+            cell = parent.find("td", class_=class_name)
+            return cell.get_text(strip=True) if cell else None
+
+        for row in rows:
+            if safe_text(row, "mnemonic") == symbol:
+                return to_float(safe_text(row, "name"))
+
+        return None
+    except Exception as e:
+        print(f"[parse_get_session_ltp] Error parsing HTML: {e}")
+        return None
+
+
 def parse_get_session_trades(html: str):
     """Extract session data for all securities"""
 

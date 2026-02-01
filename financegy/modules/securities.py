@@ -1,5 +1,6 @@
 from financegy.core import request_handler, parser
 from financegy.cache import cache_manager
+import math
 
 
 def get_securities(use_cache=True):
@@ -306,6 +307,85 @@ def get_security_session_trade(symbol: str, session: str, use_cache=True):
     cache_manager.save_cache(func_name, html, symbol, session)
 
     return parser.parse_get_security_session_trade(symbol, html)
+
+
+def get_sessions_volatility(symbol: str, session_number: int, use_cache=True):
+    """
+    Volatility over the last `sessions` observed prices, ending at the latest session.
+    Uses log returns and returns weekly volatility (std dev of weekly returns).
+    """
+
+    symbol = symbol.strip().upper()
+
+    if session_number <= 1:
+        raise ValueError(
+            "session_number must be >= 2 (need at least 2 prices to compute returns)."
+        )
+
+    latest = get_latest_session_for_symbol(symbol, use_cache=use_cache)
+    latest_session = int(latest["session"])
+
+    target_prices = session_number
+    prices: list[float] = []
+    prices_by_session: dict[int, float] = {}
+
+    func_name = "get_sessions_volatility"
+
+    session = latest_session
+    safety_limit = latest_session - (session_number * 5)
+
+    while session >= 1 and session >= safety_limit and len(prices) < target_prices:
+
+        html = None
+        if use_cache:
+            html = cache_manager.load_cache(func_name, symbol, session)
+
+        if not html:
+            path = f"/financial_session/{session}/"
+            html = request_handler.fetch_page(path)
+            cache_manager.save_cache(func_name, html, symbol, session)
+
+        price = parser.parse_get_session_ltp(symbol, html)
+
+        if price is not None:
+            prices.append(price)
+            prices_by_session[session] = price
+
+        session -= 1
+
+    if len(prices) < 2:
+        raise ValueError(
+            f"Not enough price data found for {symbol} to compute volatility."
+        )
+
+    prices.reverse()
+
+    returns = []
+    for i in range(1, len(prices)):
+        prev_p = prices[i - 1]
+        cur_p = prices[i]
+        if prev_p and prev_p > 0 and cur_p and cur_p > 0:
+            returns.append(math.log(cur_p / prev_p))
+
+    if len(returns) < 2:
+        raise ValueError("Not enough valid returns to compute volatility.")
+
+    mean = sum(returns) / len(returns)
+    variance = sum((r - mean) ** 2 for r in returns) / (len(returns) - 1)
+    weekly_vol = round(math.sqrt(variance), 2)
+
+    annualized_vol = round(weekly_vol * math.sqrt(52), 2)
+
+    return {
+        "symbol": symbol,
+        "latest_session": latest_session,
+        "requested_sessions": session_number,
+        "prices_found": len(prices),
+        "returns_count": len(returns),
+        "weekly_volatility": weekly_vol,
+        "annualized_volatility": annualized_vol,
+        "prices_by_session": dict(sorted(prices_by_session.items())),
+    }
 
 
 def get_trades_for_year(symbol: str, year: str, use_cache=True):
