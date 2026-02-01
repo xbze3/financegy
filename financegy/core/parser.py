@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
+from financegy.helpers.to_float import to_float
 
 
 def parse_get_securities(html: str):
@@ -55,13 +56,13 @@ def parse_get_security_recent_year(html: str):
             trade_data.append(
                 {
                     "session": safe_text(trade, "session"),
-                    "date": safe_text(trade, "date"),
-                    "ltp": safe_text(trade, "name"),
-                    "best_bid": safe_text(trade, "best bid"),
-                    "vol_bid": safe_text(trade, "vol bid"),
-                    "best_offer": safe_text(trade, "best offer"),
-                    "vol_offer": safe_text(trade, "vol offer"),
-                    "opening_price": safe_text(trade, "opening price"),
+                    "session_date": safe_text(trade, "date"),
+                    "last_trade_price": safe_text(trade, "name"),
+                    "eps": safe_text(trade, "best bid"),
+                    "pe_ratio": safe_text(trade, "vol bid"),
+                    "dividends_paid_last_12_months": safe_text(trade, "best offer"),
+                    "dividend_yield": safe_text(trade, "vol offer"),
+                    "notes": safe_text(trade, "opening price"),
                 }
             )
 
@@ -93,13 +94,13 @@ def parse_get_recent_trade(html: str):
 
         recent_info = {
             "session": safe_text(recent, "session"),
-            "date": safe_text(recent, "date"),
-            "ltp": safe_text(recent, "name"),
-            "best_bid": safe_text(recent, "best bid"),
-            "vol_bid": safe_text(recent, "vol bid"),
-            "best_offer": safe_text(recent, "best offer"),
-            "vol_offer": safe_text(recent, "vol offer"),
-            "opening_price": safe_text(recent, "opening price"),
+            "session_date": safe_text(recent, "date"),
+            "last_trade_price": safe_text(recent, "name"),
+            "eps": safe_text(recent, "best bid"),
+            "pe_ratio": safe_text(recent, "vol bid"),
+            "dividends_paid_last_12_months": safe_text(recent, "best offer"),
+            "dividend_yield": safe_text(recent, "vol offer"),
+            "notes": safe_text(recent, "opening price"),
         }
 
         return recent_info
@@ -128,14 +129,59 @@ def parse_get_previous_close(html: str):
             cell = parent.find("td", class_=class_name)
             return cell.get_text(strip=True) if cell else None
 
-        recent_info = {
-            "ltp": safe_text(recent, "name"),
+        previous_close = {
+            "last_trade_price": safe_text(recent, "name"),
         }
 
-        return recent_info
+        return previous_close
 
     except Exception as e:
         print(f"[parse_get_previous_close] Error parsing HTML: {e}")
+        return None
+
+
+def parse_get_price_change(html: str):
+    """Extract selected security's absolute price difference between the most recent trade and the previous session close"""
+
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+
+        security_info_html = soup.find("div", class_="year slide")
+        if not security_info_html:
+            raise ValueError("Could not find 'div.year.slide' section in HTML.")
+
+        trades = security_info_html.find_all("tr", class_="trade")
+        if not trades:
+            raise ValueError("No trade rows found for this security.")
+
+        recent = trades[-1]
+        previous = trades[-2]
+
+        def safe_text(parent, class_name):
+            cell = parent.find("td", class_=class_name)
+            return cell.get_text(strip=True) if cell else None
+
+        price_change = {
+            "recent_trade": {
+                "session": safe_text(recent, "session"),
+                "session_date": safe_text(recent, "date"),
+                "last_trade_price": safe_text(recent, "name"),
+            },
+            "previous_trade": {
+                "session": safe_text(previous, "session"),
+                "session_date": safe_text(previous, "date"),
+                "last_trade_price": safe_text(previous, "name"),
+            },
+            "price_difference": f"{(
+                to_float(safe_text(recent, "name"))
+                - to_float(safe_text(previous, "name"))
+            )}",
+        }
+
+        return price_change
+
+    except Exception as e:
+        print(f"[parse_get_security_recent] Error parsing HTML: {e}")
         return None
 
 

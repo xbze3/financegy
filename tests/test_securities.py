@@ -5,14 +5,13 @@ import pandas as pd
 #     result = get_securities()
 #     assert isinstance(result, list)
 
-
 # def test_get_security_by_symbol():
 #     result = get_security_by_symbol(symbol="ddl")
 #     assert isinstance(result, (str, type(None)))
 
 
 # def test_get_recent_trade():
-#     result = get_recent_trade(symbol="ddl")
+#     result = get_recent_trade(symbol="dtc")
 #     print(result)
 #     assert isinstance(result, (dict, type(None)))
 
@@ -20,6 +19,12 @@ import pandas as pd
 # def test_get_previous_close():
 #     result = get_previous_close(symbol="ddl")
 #     assert isinstance(result, (dict, type(None)))
+
+
+def test_get_price_change():
+    result = get_price_change(symbol="dtc")
+    print(result)
+    assert isinstance(result, (dict, type(None)))
 
 
 # def test_get_security_recent_year():
@@ -45,8 +50,6 @@ import pandas as pd
 # def test_search_securities():
 #     result = search_securities(query="ddl")
 #     assert isinstance(result, list)
-
-# test_get_price_change(symbol)
 
 # test_get_price_change_percent(symbol)
 
