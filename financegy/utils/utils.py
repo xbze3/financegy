@@ -16,7 +16,9 @@ def to_dataframe(data: dict | list[dict]):
     return pd.DataFrame(data)
 
 
-def save_to_csv(data, filename: str = "output.csv", path: str = None):
+def save_to_csv(
+    data, filename: str = "output.csv", path: str = None, silent: bool = False
+):
     """Save a list of dicts to CSV"""
 
     if path is None:
@@ -30,13 +32,17 @@ def save_to_csv(data, filename: str = "output.csv", path: str = None):
 
     df.to_csv(full_path, index=False)
 
-    print(f"\nSaved CSV to: {full_path}")
+    if not silent:
+        print(f"\nSaved CSV to: {full_path}")
 
     return True
 
 
 def save_to_excel(
-    data: dict | list[dict], filename: str = "output.xlsx", path: str = None
+    data: dict | list[dict],
+    filename: str = "output.xlsx",
+    path: str = None,
+    silent: bool = False,
 ):
     """Save data to an Excel spreadsheet."""
 
@@ -49,6 +55,7 @@ def save_to_excel(
     df = to_dataframe(data)
     df.to_excel(full_path, index=False)
 
-    print(f"\nSaved Excel Document to: {full_path}")
+    if not silent:
+        print(f"\nSaved Excel Document to: {full_path}")
 
     return True

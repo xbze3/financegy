@@ -44,7 +44,7 @@ def save_cache(func_name, value, *args, **kwargs):
         json.dump({"timestamp": datetime.now().isoformat(), "value": value}, f)
 
 
-def clear_cache():
+def clear_cache(silent: bool = False):
     """Completely clears the FinanceGY cache directory."""
     if not os.path.exists(CACHE_DIR):
         print("No cache directory found.")
@@ -52,7 +52,8 @@ def clear_cache():
 
     try:
         shutil.rmtree(CACHE_DIR)
-        print("\nCache cleared successfully.")
+        if not silent:
+            print("\nCache cleared successfully.")
         return True
 
     except Exception as e:
