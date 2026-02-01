@@ -1,4 +1,4 @@
-__version__ = "1.5"
+__version__ = "2.0"
 
 BASE_URL = "https://guyanastockexchangeinc.com"
 HEADERS = {
