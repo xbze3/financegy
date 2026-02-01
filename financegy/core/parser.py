@@ -482,7 +482,7 @@ def parse_get_historical_trades(start_date: str, end_date: str, html: str):
                         }
                     )
 
-        trade_data.sort(key=lambda x: datetime.strptime(x["date"], "%d/%m/%Y"))
+        trade_data.sort(key=lambda x: datetime.strptime(x["session_date"], "%d/%m/%Y"))
         return trade_data
 
     except Exception as e:
