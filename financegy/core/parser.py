@@ -173,12 +173,54 @@ def parse_get_price_change(html: str):
                 "last_trade_price": safe_text(previous, "name"),
             },
             "price_difference": f"{(
-                to_float(safe_text(recent, "name"))
-                - to_float(safe_text(previous, "name"))
+                to_float(safe_text(recent, 'name'))
+                - to_float(safe_text(previous, 'name'))
             )}",
         }
 
         return price_change
+
+    except Exception as e:
+        print(f"[parse_get_price_change] Error parsing HTML: {e}")
+        return None
+
+
+def parse_get_price_change_percent(html: str):
+    """Extract selected security's percentage price difference between the most recent trade and the previous session close"""
+
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+
+        security_info_html = soup.find("div", class_="year slide")
+        if not security_info_html:
+            raise ValueError("Could not find 'div.year.slide' section in HTML.")
+
+        trades = security_info_html.find_all("tr", class_="trade")
+        if not trades:
+            raise ValueError("No trade rows found for this security.")
+
+        recent = trades[-1]
+        previous = trades[-2]
+
+        def safe_text(parent, class_name):
+            cell = parent.find("td", class_=class_name)
+            return cell.get_text(strip=True) if cell else None
+
+        price_change_percent = {
+            "recent_trade": {
+                "session": safe_text(recent, "session"),
+                "session_date": safe_text(recent, "date"),
+                "last_trade_price": safe_text(recent, "name"),
+            },
+            "previous_trade": {
+                "session": safe_text(previous, "session"),
+                "session_date": safe_text(previous, "date"),
+                "last_trade_price": safe_text(previous, "name"),
+            },
+            "price_change_percent": f"{round(((to_float(safe_text(recent, 'name')) - to_float(safe_text(previous, 'name'))) /  to_float(safe_text(previous, 'name'))) * 100, 2)}",
+        }
+
+        return price_change_percent
 
     except Exception as e:
         print(f"[parse_get_price_change] Error parsing HTML: {e}")

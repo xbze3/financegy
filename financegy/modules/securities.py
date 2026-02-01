@@ -121,6 +121,27 @@ def get_price_change(symbol: str, use_cache=True):
     return parser.parse_get_price_change(html)
 
 
+def get_price_change_percent(symbol: str, use_cache=True):
+    """Get the percentage price change between the most recent trade and the previous session close."""
+
+    func_name = "get_price_change_percent"
+
+    security_name = get_security_by_symbol(symbol)
+    security_name = security_name.lower().replace(" ", "-")
+
+    if use_cache:
+        cached = cache_manager.load_cache(func_name, symbol)
+        if cached:
+            return parser.parse_get_price_change_percent(cached)
+
+    path = "/security/" + security_name
+    html = request_handler.fetch_page(path)
+
+    cache_manager.save_cache(func_name, html, symbol)
+
+    return parser.parse_get_price_change_percent(html)
+
+
 def get_session_trades(session: str, use_cache=True):
     """Get the session trade data for all the available securities"""
 
