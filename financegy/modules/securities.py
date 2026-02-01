@@ -142,6 +142,56 @@ def get_price_change_percent(symbol: str, use_cache=True):
     return parser.parse_get_price_change_percent(html)
 
 
+def get_sessions_average_price(
+    symbol: str, session_start: str, session_end: str, use_cache=True
+):
+    """Get the average last traded price of the security over a specified session range."""
+
+    func_name = "get_sessions_average_price"
+
+    start = int(session_start)
+    end = int(session_end)
+    symbol = symbol.strip().upper()
+
+    if end < start:
+        raise ValueError("session_end must be >= session_start")
+
+    prices_by_session: dict[int, float] = {}
+
+    for session in range(start, end + 1):
+        cache_key = f"{symbol}_{session}"
+
+        html = None
+        if use_cache:
+            html = cache_manager.load_cache(func_name, cache_key)
+
+        if not html:
+            path = f"/financial_session/{session}/"
+            html = request_handler.fetch_page(path)
+            cache_manager.save_cache(func_name, html, cache_key)
+
+        price = parser.parse_get_sessions_average_price(symbol, html)
+
+        if price is None:
+            continue
+
+        prices_by_session[session] = price
+
+    if not prices_by_session:
+        raise ValueError(f"No prices found for {symbol} in sessions {start}..{end}")
+
+    avg = sum(prices_by_session.values()) / len(prices_by_session)
+
+    return {
+        "symbol": symbol,
+        "session_start": start,
+        "session_end": end,
+        "observations": len(prices_by_session),
+        "average_price": avg,
+        "prices_by_session": prices_by_session,
+    }
+
+
 def get_session_trades(session: str, use_cache=True):
     """Get the session trade data for all the available securities"""
 

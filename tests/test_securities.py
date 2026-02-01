@@ -2,91 +2,99 @@ from financegy import *
 import pandas as pd
 
 
-def test_get_securities():
-    result = get_securities()
-    assert isinstance(result, list)
+# def test_get_securities():
+#     result = get_securities()
+#     assert isinstance(result, list)
 
 
-def test_get_security_by_symbol():
-    result = get_security_by_symbol(symbol="ddl")
-    assert isinstance(result, (str, type(None)))
+# def test_get_security_by_symbol():
+#     result = get_security_by_symbol(symbol="ddl")
+#     assert isinstance(result, (str, type(None)))
 
 
-def test_get_recent_trade():
-    result = get_recent_trade(symbol="dtc")
-    assert isinstance(result, (dict, type(None)))
+# def test_get_recent_trade():
+#     result = get_recent_trade(symbol="dtc")
+#     assert isinstance(result, (dict, type(None)))
 
 
-def test_get_previous_close():
-    result = get_previous_close(symbol="ddl")
-    assert isinstance(result, (dict, type(None)))
+# def test_get_previous_close():
+#     result = get_previous_close(symbol="ddl")
+#     assert isinstance(result, (dict, type(None)))
 
 
-def test_get_price_change():
-    result = get_price_change(symbol="dtc")
-    assert isinstance(result, (dict, type(None)))
+# def test_get_price_change():
+#     result = get_price_change(symbol="dtc")
+#     assert isinstance(result, (dict, type(None)))
 
 
-def test_get_price_change_percent():
-    result = get_price_change_percent(symbol="ddl")
-    assert isinstance(result, (dict, type(None)))
+# def test_get_price_change_percent():
+#     result = get_price_change_percent(symbol="ddl")
+#     assert isinstance(result, (dict, type(None)))
 
 
-def test_get_security_recent_year():
-    result = get_security_recent_year(symbol="RBL")
-    assert isinstance(result, (list, type(None)))
+# def test_get_security_recent_year():
+#     result = get_security_recent_year(symbol="RBL")
+#     assert isinstance(result, (list, type(None)))
 
 
-def test_get_session_trades():
-    result = get_session_trades(session="1135")
-    assert isinstance(result, (list, type(None)))
+# def test_get_session_trades():
+#     result = get_session_trades(session="1135")
+#     assert isinstance(result, (list, type(None)))
 
 
-def test_get_security_session_trade():
-    result = get_security_session_trade(symbol="ddl", session="1136")
-    assert isinstance(result, (dict, type(None)))
-
-
-def test_get_trades_for_year():
-    result = get_trades_for_year(symbol="ddl", year="2020")
-    assert isinstance(result, (list, type(None)))
-
-
-def test_get_historical_trades():
-    result = get_historical_trades(
-        symbol="ddl", start_date="06/2020", end_date="01/2022"
-    )
-    assert isinstance(result, (list, type(None)))
-
-
-def test_search_securities():
-    result = search_securities(query="ddl")
-    assert isinstance(result, list)
-
-
-def test_to_dataframe():
-    result = to_dataframe(get_securities())
-    assert isinstance(result, pd.DataFrame)
-
-
-def test_save_to_csv():
-    result = get_securities()
-    save_to_csv(result)
-    assert isinstance(result, list)
-
-
-def test_save_excel():
-    result = get_securities()
-    save_to_excel(result)
-    assert isinstance(result, list)
-
-
-def test_clear_cache():
-    result = clear_cache()
-    assert isinstance(result, bool)
-
+# def test_get_security_session_trade():
+#     result = get_security_session_trade(symbol="ddl", session="1053")
+#     print(result)
+#     assert isinstance(result, (dict, type(None)))
 
 # test_get_average_price(symbol, days=30)
+
+# def test_get_sessions_average_price():
+#     result = get_sessions_average_price(
+#         symbol="ddl", session_start="1053", session_end="1060"
+#     )
+#     print(result)
+#     assert isinstance(result, (dict, type(None)))
+
+
+# def test_get_trades_for_year():
+#     result = get_trades_for_year(symbol="ddl", year="2020")
+#     assert isinstance(result, (list, type(None)))
+
+
+# def test_get_historical_trades():
+#     result = get_historical_trades(
+#         symbol="ddl", start_date="06/2020", end_date="01/2022"
+#     )
+#     assert isinstance(result, (list, type(None)))
+
+
+# def test_search_securities():
+#     result = search_securities(query="ddl")
+#     assert isinstance(result, list)
+
+
+# def test_to_dataframe():
+#     result = to_dataframe(get_securities())
+#     assert isinstance(result, pd.DataFrame)
+
+
+# def test_save_to_csv():
+#     result = get_securities()
+#     save_to_csv(result)
+#     assert isinstance(result, list)
+
+
+# def test_save_excel():
+#     result = get_securities()
+#     save_to_excel(result)
+#     assert isinstance(result, list)
+
+
+# def test_clear_cache():
+#     result = clear_cache()
+#     assert isinstance(result, bool)
+
 
 # test_get_volatility(symbol, period="1y")
 

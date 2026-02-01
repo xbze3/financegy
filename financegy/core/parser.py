@@ -227,6 +227,36 @@ def parse_get_price_change_percent(html: str):
         return None
 
 
+def parse_get_sessions_average_price(symbol: str, html: str):
+    """Extract average traded price of the security over a specified session range."""
+
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+
+        session_div = soup.find("div", class_="session")
+        if not session_div:
+            raise ValueError("Could not find 'div.session' section in HTML.")
+
+        rows = session_div.find_all("tr", class_="trade")
+        if not rows:
+            raise ValueError("No trade rows found in session data.")
+
+        def safe_text(parent, class_name):
+            cell = parent.find("td", class_=class_name)
+            return cell.get_text(strip=True) if cell else None
+
+        for row in rows:
+            row_symbol = safe_text(row, "mnemonic")
+            if row_symbol == symbol:
+                return to_float(safe_text(row, "name"))
+
+        return None
+
+    except Exception as e:
+        print(f"[parse_get_average_price] Error parsing HTML: {e}")
+        return None
+
+
 def parse_get_session_trades(html: str):
     """Extract session data for all securities"""
 
@@ -251,12 +281,12 @@ def parse_get_session_trades(html: str):
             session_data.append(
                 {
                     "symbol": safe_text(session, "mnemonic"),
-                    "ltp": safe_text(session, "name"),
-                    "best_bid": safe_text(session, "best bid"),
-                    "vol_bid": safe_text(session, "vol bid"),
-                    "best_offer": safe_text(session, "best offer"),
-                    "vol_offer": safe_text(session, "vol offer"),
-                    "opening_price": safe_text(session, "opening price"),
+                    "last_trade_price": safe_text(session, "name"),
+                    "eps": safe_text(session, "best bid"),
+                    "pe_ratio": safe_text(session, "vol bid"),
+                    "dividends_paid_last_12_months": safe_text(session, "best offer"),
+                    "dividend_yield": safe_text(session, "vol offer"),
+                    "notes": safe_text(session, "opening price"),
                 }
             )
 
@@ -291,12 +321,12 @@ def parse_get_security_session_trade(symbol: str, html: str):
             if session_symbol == symbol:
                 session_data = {
                     "symbol": safe_text(session, "mnemonic"),
-                    "ltp": safe_text(session, "name"),
-                    "best_bid": safe_text(session, "best bid"),
-                    "vol_bid": safe_text(session, "vol bid"),
-                    "best_offer": safe_text(session, "best offer"),
-                    "vol_offer": safe_text(session, "vol offer"),
-                    "opening_price": safe_text(session, "opening price"),
+                    "last_trade_price": safe_text(session, "name"),
+                    "eps": safe_text(session, "best bid"),
+                    "pe_ratio": safe_text(session, "vol bid"),
+                    "dividends_paid_last_12_months": safe_text(session, "best offer"),
+                    "dividend_yield": safe_text(session, "vol offer"),
+                    "notes": safe_text(session, "opening price"),
                 }
 
         return session_data
@@ -330,13 +360,13 @@ def parse_get_trades_for_year(year: str, html: str):
             trade_data.append(
                 {
                     "session": safe_text(trade, "session"),
-                    "date": safe_text(trade, "date"),
-                    "ltp": safe_text(trade, "name"),
-                    "best_bid": safe_text(trade, "best bid"),
-                    "vol_bid": safe_text(trade, "vol bid"),
-                    "best_offer": safe_text(trade, "best offer"),
-                    "vol_offer": safe_text(trade, "vol offer"),
-                    "opening_price": safe_text(trade, "opening price"),
+                    "session_date": safe_text(trade, "date"),
+                    "last_trade_price": safe_text(trade, "name"),
+                    "eps": safe_text(trade, "best bid"),
+                    "pe_ratio": safe_text(trade, "vol bid"),
+                    "dividends_paid_last_12_months": safe_text(trade, "best offer"),
+                    "dividend_yield": safe_text(trade, "vol offer"),
+                    "notes": safe_text(trade, "opening price"),
                 }
             )
 
@@ -409,13 +439,15 @@ def parse_get_historical_trades(start_date: str, end_date: str, html: str):
                     trade_data.append(
                         {
                             "session": safe_text(trade, "session"),
-                            "date": date_text,
-                            "ltp": safe_text(trade, "name"),
-                            "best_bid": safe_text(trade, "best bid"),
-                            "vol_bid": safe_text(trade, "vol bid"),
-                            "best_offer": safe_text(trade, "best offer"),
-                            "vol_offer": safe_text(trade, "vol offer"),
-                            "opening_price": safe_text(trade, "opening price"),
+                            "session_date": safe_text(trade, "date"),
+                            "last_trade_price": safe_text(trade, "name"),
+                            "eps": safe_text(trade, "best bid"),
+                            "pe_ratio": safe_text(trade, "vol bid"),
+                            "dividends_paid_last_12_months": safe_text(
+                                trade, "best offer"
+                            ),
+                            "dividend_yield": safe_text(trade, "vol offer"),
+                            "notes": safe_text(trade, "opening price"),
                         }
                     )
 
