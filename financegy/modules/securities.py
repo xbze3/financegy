@@ -209,7 +209,7 @@ def get_sessions_average_price(
     if not prices_by_session:
         raise ValueError(f"No prices found for {symbol} in sessions {start}..{end}")
 
-    avg = sum(prices_by_session.values()) / len(prices_by_session)
+    avg = round(sum(prices_by_session.values()) / len(prices_by_session), 2)
 
     return {
         "symbol": symbol,
@@ -256,7 +256,7 @@ def get_average_price(symbol: str, session_number: int, use_cache=True):
     if not prices_by_session:
         raise ValueError(f"No prices found for {symbol} in sessions {start}..{end}")
 
-    avg = sum(prices_by_session.values()) / len(prices_by_session)
+    avg = round(sum(prices_by_session.values()) / len(prices_by_session), 2)
 
     return {
         "symbol": symbol,
@@ -265,7 +265,7 @@ def get_average_price(symbol: str, session_number: int, use_cache=True):
         "session_start": start,
         "session_end": end,
         "observations": len(prices_by_session),
-        "average_price": round(avg, 2),
+        "average_price": avg,
         "prices_by_session": prices_by_session,
     }
 
