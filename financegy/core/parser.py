@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
 from financegy.helpers.to_float import to_float
+from financegy.helpers.safe_text import safe_text
 
 
 def parse_get_securities(html: str):
@@ -48,10 +49,6 @@ def parse_get_security_recent_year(html: str):
         if not trades:
             raise ValueError("No trade rows found for this security.")
 
-        def safe_text(parent, class_name):
-            cell = parent.find("td", class_=class_name)
-            return cell.get_text(strip=True) if cell else None
-
         for trade in trades:
             trade_data.append(
                 {
@@ -88,10 +85,6 @@ def parse_get_recent_trade(html: str):
 
         recent = trades[-1]
 
-        def safe_text(parent, class_name):
-            cell = parent.find("td", class_=class_name)
-            return cell.get_text(strip=True) if cell else None
-
         recent_info = {
             "session": safe_text(recent, "session"),
             "session_date": safe_text(recent, "date"),
@@ -125,10 +118,6 @@ def parse_get_previous_close(html: str):
 
         recent = trades[-1]
 
-        def safe_text(parent, class_name):
-            cell = parent.find("td", class_=class_name)
-            return cell.get_text(strip=True) if cell else None
-
         previous_close = {
             "last_trade_price": safe_text(recent, "name"),
         }
@@ -156,10 +145,6 @@ def parse_get_price_change(html: str):
 
         recent = trades[-1]
         previous = trades[-2]
-
-        def safe_text(parent, class_name):
-            cell = parent.find("td", class_=class_name)
-            return cell.get_text(strip=True) if cell else None
 
         price_change = {
             "recent_trade": {
@@ -202,10 +187,6 @@ def parse_get_price_change_percent(html: str):
         recent = trades[-1]
         previous = trades[-2]
 
-        def safe_text(parent, class_name):
-            cell = parent.find("td", class_=class_name)
-            return cell.get_text(strip=True) if cell else None
-
         price_change_percent = {
             "recent_trade": {
                 "session": safe_text(recent, "session"),
@@ -241,10 +222,6 @@ def parse_get_sessions_average_price(symbol: str, html: str):
         if not rows:
             raise ValueError("No trade rows found in session data.")
 
-        def safe_text(parent, class_name):
-            cell = parent.find("td", class_=class_name)
-            return cell.get_text(strip=True) if cell else None
-
         for row in rows:
             row_symbol = safe_text(row, "mnemonic")
             if row_symbol == symbol:
@@ -273,10 +250,6 @@ def parse_get_average_price(symbol: str, html: str):
         if not rows:
             raise ValueError("No trade rows found in session data.")
 
-        def safe_text(parent, class_name):
-            cell = parent.find("td", class_=class_name)
-            return cell.get_text(strip=True) if cell else None
-
         for row in rows:
             row_symbol = safe_text(row, "mnemonic")
             if row_symbol == symbol:
@@ -302,10 +275,6 @@ def parse_get_session_ltp(symbol: str, html: str):
         if not rows:
             return None
 
-        def safe_text(parent, class_name):
-            cell = parent.find("td", class_=class_name)
-            return cell.get_text(strip=True) if cell else None
-
         for row in rows:
             if safe_text(row, "mnemonic") == symbol:
                 return to_float(safe_text(row, "name"))
@@ -313,6 +282,53 @@ def parse_get_session_ltp(symbol: str, html: str):
         return None
     except Exception as e:
         print(f"[parse_get_session_ltp] Error parsing HTML: {e}")
+        return None
+
+
+def parse_get_ytd_high_low(html: str):
+    """
+    Parse the current-year trade rows in the security page HTML and return
+    YTD high/low with session/date metadata.
+    """
+
+    try:
+        year = str(datetime.now().year)
+
+        trades = parse_get_trades_for_year(year, html)
+        if not trades:
+            return None
+
+        best_high = None
+        best_low = None
+
+        for t in trades:
+            price = to_float(t.get("last_trade_price"))
+            if price is None:
+                continue
+
+            entry = {
+                "price": price,
+                "session": t.get("session"),
+                "session_date": t.get("session_date"),
+            }
+
+            if best_high is None or price > best_high["price"]:
+                best_high = entry
+
+            if best_low is None or price < best_low["price"]:
+                best_low = entry
+
+        if best_high is None or best_low is None:
+            return None
+
+        return {
+            "year": int(year),
+            "high": best_high,
+            "low": best_low,
+        }
+
+    except Exception as e:
+        print(f"[parse_get_ytd_high_low] Error parsing HTML: {e}")
         return None
 
 
@@ -329,10 +345,6 @@ def parse_get_session_trades(html: str):
         sessions = sessions_info_html.find_all("tr", class_="trade")
         if not sessions:
             raise ValueError("No session data found.")
-
-        def safe_text(parent, class_name):
-            cell = parent.find("td", class_=class_name)
-            return cell.get_text(strip=True) if cell else None
 
         session_data = []
 
@@ -370,10 +382,6 @@ def parse_get_security_session_trade(symbol: str, html: str):
         if not sessions:
             raise ValueError("No session data found.")
 
-        def safe_text(parent, class_name):
-            cell = parent.find("td", class_=class_name)
-            return cell.get_text(strip=True) if cell else None
-
         for session in sessions:
             session_symbol = safe_text(session, "mnemonic")
 
@@ -410,10 +418,6 @@ def parse_get_trades_for_year(year: str, html: str):
         trades = security_info_html.find_all("tr", class_="trade")
         if not trades:
             raise ValueError("No trade rows found for this security.")
-
-        def safe_text(parent, class_name):
-            cell = parent.find("td", class_=class_name)
-            return cell.get_text(strip=True) if cell else None
 
         for trade in trades:
             trade_data.append(
@@ -469,10 +473,6 @@ def parse_get_historical_trades(start_date: str, end_date: str, html: str):
             raise ValueError("No 'div.year.slide' sections found in HTML.")
 
         trade_data = []
-
-        def safe_text(parent, class_name):
-            cell = parent.find("td", class_=class_name)
-            return cell.get_text(strip=True) if cell else None
 
         for section in year_sections:
             year_id = section.get("id")

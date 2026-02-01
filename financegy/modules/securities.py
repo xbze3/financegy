@@ -189,16 +189,15 @@ def get_sessions_average_price(
     prices_by_session: dict[int, float] = {}
 
     for session in range(start, end + 1):
-        cache_key = f"{symbol}_{session}"
 
         html = None
         if use_cache:
-            html = cache_manager.load_cache(func_name, cache_key)
+            html = cache_manager.load_cache(func_name, symbol, session)
 
         if not html:
             path = f"/financial_session/{session}/"
             html = request_handler.fetch_page(path)
-            cache_manager.save_cache(func_name, html, cache_key)
+            cache_manager.save_cache(func_name, html, symbol, session)
 
         price = parser.parse_get_sessions_average_price(symbol, html)
 
@@ -385,6 +384,34 @@ def get_sessions_volatility(symbol: str, session_number: int, use_cache=True):
         "weekly_volatility": weekly_vol,
         "annualized_volatility": annualized_vol,
         "prices_by_session": dict(sorted(prices_by_session.items())),
+    }
+
+
+def get_ytd_high_low(symbol: str, use_cache: bool = True):
+    """Return year-to-date highest and lowest traded prices for the security."""
+
+    func_name = "get_ytd_high_low"
+    symbol = symbol.strip().upper()
+
+    security_name = get_security_by_symbol(symbol)
+    security_name = security_name.lower().replace(" ", "-")
+
+    html = None
+    if use_cache:
+        html = cache_manager.load_cache(func_name, symbol)
+
+    if not html:
+        path = f"/security/{security_name}/"
+        html = request_handler.fetch_page(path)
+        cache_manager.save_cache(func_name, html, symbol)
+
+    result = parser.parse_get_ytd_high_low(html)
+    if not result:
+        raise ValueError(f"Could not compute YTD high/low for {symbol}")
+
+    return {
+        "symbol": symbol,
+        **result,
     }
 
 
