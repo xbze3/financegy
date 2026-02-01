@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
 
+
 def parse_get_securities(html: str):
     """Extract security info"""
 
@@ -10,24 +11,25 @@ def parse_get_securities(html: str):
 
         if not security_info_html:
             return []
-        
+
         security_info = []
         securities = security_info_html.find_all("div", class_="security group")
 
         for security in securities:
-            symbol = security.find_all("div", class_="acronym inline")[0].get_text(strip=True)
-            name = security.find_all("div", class_="name inline")[0].get_text(strip=True)
+            symbol = security.find_all("div", class_="acronym inline")[0].get_text(
+                strip=True
+            )
+            name = security.find_all("div", class_="name inline")[0].get_text(
+                strip=True
+            )
 
-            security_info.append({
-                "symbol": symbol,
-                "name": name
-            })
+            security_info.append({"symbol": symbol, "name": name})
 
-        
         return security_info
-    
+
     except Exception as e:
         print(f"[parse_get_securities] Error parsing securities: {e}")
+
 
 def parse_get_security_recent_year(html: str):
     """Extract selected security's trade info from current year"""
@@ -38,34 +40,37 @@ def parse_get_security_recent_year(html: str):
         security_info_html = soup.find("div", class_="year slide")
         if not security_info_html:
             raise ValueError("Could not find 'div.year.slide' section in HTML.")
-        
+
         trade_data = []
 
         trades = security_info_html.find_all("tr", class_="trade")
         if not trades:
             raise ValueError("No trade rows found for this security.")
-        
+
         def safe_text(parent, class_name):
             cell = parent.find("td", class_=class_name)
             return cell.get_text(strip=True) if cell else None
-        
+
         for trade in trades:
-            trade_data.append({
-            "session": safe_text(trade, "session"),
-            "date": safe_text(trade, "date"),
-            "ltp": safe_text(trade, "name"),
-            "best_bid": safe_text(trade, "best bid"),
-            "vol_bid": safe_text(trade, "vol bid"),
-            "best_offer": safe_text(trade, "best offer"),
-            "vol_offer": safe_text(trade, "vol offer"),
-            "opening_price": safe_text(trade, "opening price"),
-            })
+            trade_data.append(
+                {
+                    "session": safe_text(trade, "session"),
+                    "date": safe_text(trade, "date"),
+                    "ltp": safe_text(trade, "name"),
+                    "best_bid": safe_text(trade, "best bid"),
+                    "vol_bid": safe_text(trade, "vol bid"),
+                    "best_offer": safe_text(trade, "best offer"),
+                    "vol_offer": safe_text(trade, "vol offer"),
+                    "opening_price": safe_text(trade, "opening price"),
+                }
+            )
 
         return trade_data
-    
+
     except Exception as e:
         print(f"[parse_get_security_recent_year] Error parsing HTML: {e}")
         return None
+
 
 def parse_get_recent_trade(html: str):
     """Extract selected security's most recent trade info"""
@@ -102,7 +107,38 @@ def parse_get_recent_trade(html: str):
     except Exception as e:
         print(f"[parse_get_security_recent] Error parsing HTML: {e}")
         return None
-    
+
+
+def parse_get_previous_close(html: str):
+    """Extract selected security's most recent closing price"""
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+
+        security_info_html = soup.find("div", class_="year slide")
+        if not security_info_html:
+            raise ValueError("Could not find 'div.year.slide' section in HTML.")
+
+        trades = security_info_html.find_all("tr", class_="trade")
+        if not trades:
+            raise ValueError("No trade rows found for this security.")
+
+        recent = trades[-1]
+
+        def safe_text(parent, class_name):
+            cell = parent.find("td", class_=class_name)
+            return cell.get_text(strip=True) if cell else None
+
+        recent_info = {
+            "ltp": safe_text(recent, "name"),
+        }
+
+        return recent_info
+
+    except Exception as e:
+        print(f"[parse_get_previous_close] Error parsing HTML: {e}")
+        return None
+
+
 def parse_get_session_trades(html: str):
     """Extract session data for all securities"""
 
@@ -124,22 +160,25 @@ def parse_get_session_trades(html: str):
         session_data = []
 
         for session in sessions:
-            session_data.append({
-            "symbol": safe_text(session, "mnemonic"),
-            "ltp": safe_text(session, "name"),
-            "best_bid": safe_text(session, "best bid"),
-            "vol_bid": safe_text(session, "vol bid"),
-            "best_offer": safe_text(session, "best offer"),
-            "vol_offer": safe_text(session, "vol offer"),
-            "opening_price": safe_text(session, "opening price"),
-            })
+            session_data.append(
+                {
+                    "symbol": safe_text(session, "mnemonic"),
+                    "ltp": safe_text(session, "name"),
+                    "best_bid": safe_text(session, "best bid"),
+                    "vol_bid": safe_text(session, "vol bid"),
+                    "best_offer": safe_text(session, "best offer"),
+                    "vol_offer": safe_text(session, "vol offer"),
+                    "opening_price": safe_text(session, "opening price"),
+                }
+            )
 
         return session_data
-    
+
     except Exception as e:
         print(f"[parse_get_securities_session] Error parsing HTML: {e}")
         return None
-    
+
+
 def parse_get_security_session_trade(symbol: str, html: str):
     """Extract session data for given security"""
 
@@ -153,16 +192,15 @@ def parse_get_security_session_trade(symbol: str, html: str):
         sessions = sessions_info_html.find_all("tr", class_="trade")
         if not sessions:
             raise ValueError("No session data found.")
-        
+
         def safe_text(parent, class_name):
             cell = parent.find("td", class_=class_name)
             return cell.get_text(strip=True) if cell else None
 
-
         for session in sessions:
             session_symbol = safe_text(session, "mnemonic")
 
-            if (session_symbol == symbol):
+            if session_symbol == symbol:
                 session_data = {
                     "symbol": safe_text(session, "mnemonic"),
                     "ltp": safe_text(session, "name"),
@@ -172,13 +210,14 @@ def parse_get_security_session_trade(symbol: str, html: str):
                     "vol_offer": safe_text(session, "vol offer"),
                     "opening_price": safe_text(session, "opening price"),
                 }
-        
+
         return session_data
-    
+
     except Exception as e:
         print(f"[parse_get_security_session] Error parsing HTML: {e}")
         return None
-    
+
+
 def parse_get_trades_for_year(year: str, html: str):
     """Get security trade information from a specific year"""
 
@@ -188,37 +227,37 @@ def parse_get_trades_for_year(year: str, html: str):
         security_info_html = soup.find("div", class_="year slide", id=year)
         if not security_info_html:
             raise ValueError("Could not find 'div.year.slide' section in HTML.")
-        
+
         trade_data = []
 
         trades = security_info_html.find_all("tr", class_="trade")
         if not trades:
             raise ValueError("No trade rows found for this security.")
-        
+
         def safe_text(parent, class_name):
             cell = parent.find("td", class_=class_name)
             return cell.get_text(strip=True) if cell else None
-        
+
         for trade in trades:
-            trade_data.append({
-            "session": safe_text(trade, "session"),
-            "date": safe_text(trade, "date"),
-            "ltp": safe_text(trade, "name"),
-            "best_bid": safe_text(trade, "best bid"),
-            "vol_bid": safe_text(trade, "vol bid"),
-            "best_offer": safe_text(trade, "best offer"),
-            "vol_offer": safe_text(trade, "vol offer"),
-            "opening_price": safe_text(trade, "opening price"),
-            })
+            trade_data.append(
+                {
+                    "session": safe_text(trade, "session"),
+                    "date": safe_text(trade, "date"),
+                    "ltp": safe_text(trade, "name"),
+                    "best_bid": safe_text(trade, "best bid"),
+                    "vol_bid": safe_text(trade, "vol bid"),
+                    "best_offer": safe_text(trade, "best offer"),
+                    "vol_offer": safe_text(trade, "vol offer"),
+                    "opening_price": safe_text(trade, "opening price"),
+                }
+            )
 
         return trade_data
-    
+
     except Exception as e:
         print(f"[parse_get_security_recent_year] Error parsing HTML: {e}")
         return None
 
-from datetime import datetime
-from bs4 import BeautifulSoup
 
 def parse_get_historical_trades(start_date: str, end_date: str, html: str):
     """Parse historical trade data from HTML between given dates (DD/MM/YYYY)"""
@@ -279,16 +318,18 @@ def parse_get_historical_trades(start_date: str, end_date: str, html: str):
                     continue
 
                 if start <= trade_date <= end:
-                    trade_data.append({
-                        "session": safe_text(trade, "session"),
-                        "date": date_text,
-                        "ltp": safe_text(trade, "name"),
-                        "best_bid": safe_text(trade, "best bid"),
-                        "vol_bid": safe_text(trade, "vol bid"),
-                        "best_offer": safe_text(trade, "best offer"),
-                        "vol_offer": safe_text(trade, "vol offer"),
-                        "opening_price": safe_text(trade, "opening price"),
-                    })
+                    trade_data.append(
+                        {
+                            "session": safe_text(trade, "session"),
+                            "date": date_text,
+                            "ltp": safe_text(trade, "name"),
+                            "best_bid": safe_text(trade, "best bid"),
+                            "vol_bid": safe_text(trade, "vol bid"),
+                            "best_offer": safe_text(trade, "best offer"),
+                            "vol_offer": safe_text(trade, "vol offer"),
+                            "opening_price": safe_text(trade, "opening price"),
+                        }
+                    )
 
         trade_data.sort(key=lambda x: datetime.strptime(x["date"], "%d/%m/%Y"))
         return trade_data

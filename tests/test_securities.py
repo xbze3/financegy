@@ -5,18 +5,27 @@ import pandas as pd
 #     result = get_securities()
 #     assert isinstance(result, list)
 
+
 # def test_get_security_by_symbol():
-#     result = get_security_by_symbol(symbol="ddl")    
+#     result = get_security_by_symbol(symbol="ddl")
 #     assert isinstance(result, (str, type(None)))
+
 
 # def test_get_recent_trade():
 #     result = get_recent_trade(symbol="ddl")
+#     print(result)
 #     assert isinstance(result, (dict, type(None)))
+
+
+# def test_get_previous_close():
+#     result = get_previous_close(symbol="ddl")
+#     assert isinstance(result, (dict, type(None)))
+
 
 # def test_get_security_recent_year():
 #     result = get_security_recent_year(symbol="RBL")
 #     assert isinstance(result, (list, type(None)))
-    
+
 # def test_get_session_trades():
 #     result = get_session_trades(session="1135")
 #     assert isinstance(result, (list, type(None)))
@@ -36,7 +45,17 @@ import pandas as pd
 # def test_search_securities():
 #     result = search_securities(query="ddl")
 #     assert isinstance(result, list)
-    
+
+# test_get_price_change(symbol)
+
+# test_get_price_change_percent(symbol)
+
+# test_get_average_price(symbol, days=30)
+
+# test_get_volatility(symbol, period="1y")
+
+# test_get_ytd_high_low(symbol)
+
 # def test_to_dataframe():
 #     result = to_dataframe(get_securities())
 #     assert isinstance(result, pd.DataFrame)
@@ -50,7 +69,6 @@ import pandas as pd
 #     result = get_securities()
 #     save_to_excel(result)
 #     assert isinstance(result, list)
-
 
 # def test_clear_cache():
 #     result = clear_cache()
