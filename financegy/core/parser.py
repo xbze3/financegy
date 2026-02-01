@@ -106,7 +106,7 @@ def parse_get_recent_trade(html: str):
         return recent_info
 
     except Exception as e:
-        print(f"[parse_get_security_recent] Error parsing HTML: {e}")
+        print(f"[parse_get_recent_trade] Error parsing HTML: {e}")
         return None
 
 
@@ -181,7 +181,7 @@ def parse_get_price_change(html: str):
         return price_change
 
     except Exception as e:
-        print(f"[parse_get_security_recent] Error parsing HTML: {e}")
+        print(f"[parse_get_price_change] Error parsing HTML: {e}")
         return None
 
 
