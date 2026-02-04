@@ -54,7 +54,7 @@ search_results = financegy.search_securities("DDL")
 # Get all trades for a specific year
 year_trades = financegy.get_trades_for_year("DDL", "2019")
 
-# Get historical trades within a date range — supports: yyyy / mm/yyyy / dd/mm/yyyy
+# Get historical trades within a date range - supports: yyyy / mm/yyyy / dd/mm/yyyy
 historical_trades = financegy.get_historical_trades(
     symbol="DDL",
     start_date="01/06/2020",
@@ -81,6 +81,35 @@ volatility = financegy.get_sessions_volatility("DDL", 30)
 ytd_high_low = financegy.get_ytd_high_low("DDL")
 
 # --------------------------
+# Portfolio / Position Calculations
+# --------------------------
+
+# Calculate the current market value of a position
+position_value = financegy.calculate_position_value("DDL", shares=50)
+
+# Calculate unrealized gain or loss for a position
+position_return = financegy.calculate_position_return(
+    symbol="DDL",
+    shares=50,
+    purchase_price=250
+)
+
+# Calculate percentage return for a position
+position_return_percent = financegy.calculate_position_return_percent(
+    symbol="DDL",
+    shares=50,
+    purchase_price=250
+)
+
+# Portfolio-level summary
+portfolio = [
+    {"symbol": "DTC", "shares": 100, "purchase_price": 300},
+    {"symbol": "DDL", "shares": 50, "purchase_price": 250},
+]
+
+portfolio_summary = financegy.calculate_portfolio_summary(portfolio)
+
+# --------------------------
 # Utilities
 # --------------------------
 
@@ -101,39 +130,48 @@ financegy.clear_cache(silent=True)
 
 ### Core Data Retrieval
 
-| Function                                              | Description                                                                                           |
-| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `get_securities()`                                    | Returns all currently traded securities on the GSE.                                                   |
-| `get_security_by_symbol(symbol)`                      | Returns the full security name for a ticker symbol (e.g., `"DDL"` → `"Demerara Distillers Limited"`). |
-| `get_recent_trade(symbol)`                            | Returns the most recent trade information for the given security.                                     |
-| `get_security_recent_year(symbol)`                    | Returns all trade data for the most recent year available for the selected security.                  |
-| `get_session_trades(session)`                         | Returns trade data for **all** securities during a specific trading session.                          |
-| `get_security_session_trade(symbol, session)`         | Returns trade data for a **specific** security during a specific session.                             |
-| `search_securities(query)`                            | Searches securities whose names or ticker symbols match the given query (partial match).              |
-| `get_trades_for_year(symbol, year)`                   | Returns all trade records for a specific security during a given year.                                |
-| `get_historical_trades(symbol, start_date, end_date)` | Returns historical trades within the specified date range (`dd/mm/yyyy`, `mm/yyyy`, or `yyyy`).       |
+| Function                                              | Description                                                                          |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `get_securities()`                                    | Returns all currently traded securities on the GSE.                                  |
+| `get_security_by_symbol(symbol)`                      | Returns the full security name for a ticker symbol.                                  |
+| `get_recent_trade(symbol)`                            | Returns the most recent trade information for the given security.                    |
+| `get_security_recent_year(symbol)`                    | Returns all trade data for the most recent year available for the selected security. |
+| `get_session_trades(session)`                         | Returns trade data for all securities during a specific trading session.             |
+| `get_security_session_trade(symbol, session)`         | Returns trade data for a specific security during a specific session.                |
+| `search_securities(query)`                            | Searches securities whose names or ticker symbols match the given query.             |
+| `get_trades_for_year(symbol, year)`                   | Returns all trade records for a specific security during a given year.               |
+| `get_historical_trades(symbol, start_date, end_date)` | Returns historical trades within the specified date range.                           |
 
 ### Analytics / Calculation Functions
 
-| Function                                                         | Description                                                                                      |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `get_previous_close(symbol)`                                     | Returns the most recent closing/last trade price for the security.                               |
-| `get_price_change(symbol)`                                       | Returns absolute price difference between the most recent trade and the previous session close.  |
-| `get_price_change_percent(symbol)`                               | Returns percent price change between the most recent trade and the previous session close.       |
-| `get_latest_session_for_symbol(symbol)`                          | Returns the latest trade dict for the symbol (includes the latest `session`).                    |
-| `get_sessions_average_price(symbol, session_start, session_end)` | Returns the average last traded price over a session range (inclusive).                          |
-| `get_average_price(symbol, session_number)`                      | Returns the average last traded price over the last **N** sessions ending at the latest session. |
-| `get_sessions_volatility(symbol, session_number)`                | Returns volatility over the last **N** sessions using log returns (weekly + annualized).         |
-| `get_ytd_high_low(symbol)`                                       | Returns year-to-date highest and lowest traded prices for the security.                          |
+| Function                                                         | Description                                                     |
+| ---------------------------------------------------------------- | --------------------------------------------------------------- |
+| `get_previous_close(symbol)`                                     | Returns the most recent closing/last trade price.               |
+| `get_price_change(symbol)`                                       | Returns absolute price difference vs previous session close.    |
+| `get_price_change_percent(symbol)`                               | Returns percent price change vs previous session close.         |
+| `get_latest_session_for_symbol(symbol)`                          | Returns the latest trade dict for the symbol.                   |
+| `get_sessions_average_price(symbol, session_start, session_end)` | Returns the average last traded price over a session range.     |
+| `get_average_price(symbol, session_number)`                      | Returns the average last traded price over the last N sessions. |
+| `get_sessions_volatility(symbol, session_number)`                | Returns volatility over the last N sessions.                    |
+| `get_ytd_high_low(symbol)`                                       | Returns year-to-date highest and lowest traded prices.          |
+
+### Portfolio / Position Functions
+
+| Function                                                            | Description                                                                     |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `calculate_position_value(symbol, shares)`                          | Calculates the current market value of a position using the latest trade price. |
+| `calculate_position_return(symbol, shares, purchase_price)`         | Calculates the unrealized gain or loss for a position.                          |
+| `calculate_position_return_percent(symbol, shares, purchase_price)` | Calculates the percentage return for a position.                                |
+| `calculate_portfolio_summary(positions)`                            | Computes a full portfolio summary including totals and per-position breakdown.  |
 
 ### Utilities
 
-| Function                                                               | Description                                                     |
-| ---------------------------------------------------------------------- | --------------------------------------------------------------- |
-| `to_dataframe(data)`                                                   | Converts FinanceGY list/dict results into a `pandas.DataFrame`. |
-| `save_to_csv(data, filename="output.csv", path=None, silent=False)`    | Saves data to a CSV file.                                       |
-| `save_to_excel(data, filename="output.xlsx", path=None, silent=False)` | Saves data to an Excel file.                                    |
-| `clear_cache(silent=False)`                                            | Completely clears the FinanceGY cache directory.                |
+| Function                                                               | Description                                                   |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `to_dataframe(data)`                                                   | Converts FinanceGY list/dict results into a pandas DataFrame. |
+| `save_to_csv(data, filename="output.csv", path=None, silent=False)`    | Saves data to a CSV file.                                     |
+| `save_to_excel(data, filename="output.xlsx", path=None, silent=False)` | Saves data to an Excel file.                                  |
+| `clear_cache(silent=False)`                                            | Completely clears the FinanceGY cache directory.              |
 
 ---
 
