@@ -23,6 +23,13 @@ from financegy.modules.securities import (
     get_historical_trades,
 )
 
+from financegy.modules.portfolio import (
+    calculate_position_value,
+    calculate_position_return,
+    calculate_position_return_percent,
+    calculate_portfolio_summary,
+)
+
 __all__ = [
     "get_securities",
     "get_security_by_symbol",
@@ -41,6 +48,10 @@ __all__ = [
     "search_securities",
     "get_trades_for_year",
     "get_historical_trades",
+    "calculate_position_value",
+    "calculate_position_return",
+    "calculate_position_return_percent",
+    "calculate_portfolio_summary",
     "clear_cache",
     "save_to_csv",
     "to_dataframe",

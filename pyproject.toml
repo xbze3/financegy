@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "financegy"
-version = "2.0"
+version = "3.0"
 description = "Unofficial Python library for accessing GSE (Guyana Stock Exchange) financial data"
 authors = [{ name = "Ezra Minty", email = "ezranminty@gmail.com" }]
 dependencies = ["requests", "beautifulsoup4", "pandas", "openpyxl"]

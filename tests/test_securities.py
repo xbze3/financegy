@@ -91,6 +91,30 @@ def test_search_securities():
     assert isinstance(result, list)
 
 
+def test_calculate_position_value():
+    result = calculate_position_value("ddl", "10")
+    assert isinstance(result, (dict, type(None)))
+
+
+def test_calculate_position_return():
+    result = calculate_position_return("ddl", "10", "31")
+    assert isinstance(result, (dict, type(None)))
+
+
+def test_calculate_position_return_percent():
+    result = calculate_position_return_percent("ddl", "10", "31")
+    assert isinstance(result, dict)
+
+
+def test_calculate_portfolio_summary():
+    positions = [
+        {"symbol": "DTC", "shares": "100", "purchase_price": "300"},
+        {"symbol": "DDL", "shares": "50", "purchase_price": "250"},
+    ]
+    result = calculate_portfolio_summary(positions)
+    assert isinstance(result, dict)
+
+
 def test_to_dataframe():
     result = to_dataframe(get_securities())
     assert isinstance(result, pd.DataFrame)
