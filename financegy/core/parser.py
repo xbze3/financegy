@@ -157,10 +157,10 @@ def parse_get_price_change(html: str):
                 "session_date": safe_text(previous, "date"),
                 "last_trade_price": safe_text(previous, "name"),
             },
-            "price_difference": f"{(
-                to_float(safe_text(recent, 'name'))
-                - to_float(safe_text(previous, 'name'))
-            )}",
+            "price_difference": str(
+                to_float(safe_text(recent, "name"))
+                - to_float(safe_text(previous, "name"))
+            ),
         }
 
         return price_change
