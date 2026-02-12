@@ -143,6 +143,9 @@ def parse_get_price_change(html: str):
         if not trades:
             raise ValueError("No trade rows found for this security.")
 
+        if len(trades) < 2:
+            raise ValueError("Not enough trade rows to compute change.")
+
         recent = trades[-1]
         previous = trades[-2]
 
@@ -184,8 +187,18 @@ def parse_get_price_change_percent(html: str):
         if not trades:
             raise ValueError("No trade rows found for this security.")
 
+        if len(trades) < 2:
+            raise ValueError("Not enough trade rows to compute change.")
+
         recent = trades[-1]
         previous = trades[-2]
+
+        prev = to_float(safe_text(previous, "name"))
+        recent_price = to_float(safe_text(recent, "name"))
+
+        pct = None
+        if prev not in (None, 0) and recent_price is not None:
+            pct = round(((recent_price - prev) / prev) * 100, 2)
 
         price_change_percent = {
             "recent_trade": {
@@ -198,7 +211,7 @@ def parse_get_price_change_percent(html: str):
                 "session_date": safe_text(previous, "date"),
                 "last_trade_price": safe_text(previous, "name"),
             },
-            "price_change_percent": f"{round(((to_float(safe_text(recent, 'name')) - to_float(safe_text(previous, 'name'))) /  to_float(safe_text(previous, 'name'))) * 100, 2)}",
+            "price_change_percent": pct,
         }
 
         return price_change_percent
