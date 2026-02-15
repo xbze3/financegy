@@ -19,9 +19,12 @@ from financegy.modules.securities import (
     get_latest_session_for_symbol,
     get_security_session_trade,
     search_securities,
+    get_recent_session,
     get_trades_for_year,
     get_historical_trades,
 )
+
+from financegy.modules.market import get_active_securities
 
 from financegy.modules.portfolio import (
     calculate_position_value,
@@ -52,6 +55,8 @@ __all__ = [
     "calculate_position_return",
     "calculate_position_return_percent",
     "calculate_portfolio_summary",
+    "get_active_securities",
+    "get_recent_session",
     "clear_cache",
     "save_to_csv",
     "to_dataframe",

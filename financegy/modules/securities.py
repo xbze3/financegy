@@ -21,7 +21,25 @@ def get_securities(use_cache=True):
     return parser.parse_get_securities(html)
 
 
-def get_security_by_symbol(symbol: str, use_cache=True):
+def get_recent_session(use_cache=True):
+    """Get the most recent trading session"""
+
+    func_name = "get_recent_session"
+
+    if use_cache:
+        cached = cache_manager.load_cache(func_name)
+        if cached:
+            return parser.parse_get_recent_session(cached)
+
+    path = "/trades/"
+    html = request_handler.fetch_page(path)
+
+    cache_manager.save_cache(func_name, html)
+
+    return parser.parse_get_recent_session(html)
+
+
+def get_security_by_symbol(symbol: str):
     """Get the security details by its ticker symbol"""
 
     securities = get_securities()

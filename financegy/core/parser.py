@@ -453,6 +453,87 @@ def parse_get_trades_for_year(year: str, html: str):
         return None
 
 
+def parse_get_recent_session(html: str):
+    """Parse trades page HTML and return the most recent session number."""
+
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+
+        sessions = soup.find_all("div", class_="session")
+        if not sessions:
+            raise ValueError("No sessions found.")
+
+        most_recent = sessions[-1]
+
+        anchor = most_recent.find("a")
+        if not anchor:
+            raise ValueError("No anchor tag found in most recent session.")
+
+        session_text = anchor.get_text(strip=True)
+
+        parts = session_text.split()
+        if not parts:
+            raise ValueError("Session text is empty.")
+
+        session_number = parts[-1]
+
+        return session_number
+
+    except Exception as e:
+        print(f"[parse_get_recent_session] Error parsing HTML: {e}")
+        return None
+
+
+def parse_get_active_securities(html: str):
+    """Parse most recent session page HTML and return active market securities (symbol + company name)."""
+
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+
+        session_div = soup.find("div", class_="session")
+        if not session_div:
+            raise ValueError("No session container found (div.session).")
+
+        table = session_div.find("table")
+        if not table:
+            raise ValueError("No session table found inside div.session.")
+
+        rows = table.select("tbody tr.trade")
+        if not rows:
+            raise ValueError("No trade rows found in session table (tbody tr.trade).")
+
+        securities = []
+
+        for i, row in enumerate(rows, start=1):
+            issuer_cell = row.find("td", class_="issuer")
+            if not issuer_cell:
+                raise ValueError(f"Row {i}: missing td.issuer cell.")
+
+            name = issuer_cell.get_text(strip=True)
+            if not name:
+                raise ValueError(f"Row {i}: company name text is empty.")
+
+            mnemonic_cell = row.find("td", class_="mnemonic")
+            if not mnemonic_cell:
+                raise ValueError(f"Row {i}: missing td.mnemonic cell.")
+
+            anchor = mnemonic_cell.find("a")
+            if not anchor:
+                raise ValueError(f"Row {i}: missing anchor tag inside td.mnemonic.")
+
+            symbol = anchor.get_text(strip=True)
+            if not symbol:
+                raise ValueError(f"Row {i}: symbol text is empty.")
+
+            securities.append({"symbol": symbol, "name": name})
+
+        return securities
+
+    except Exception as e:
+        print(f"[parse_get_active_securities] Error parsing HTML: {e}")
+        return None
+
+
 def parse_get_historical_trades(start_date: str, end_date: str, html: str):
     """Parse historical trade data from HTML between given dates (DD/MM/YYYY)"""
 
