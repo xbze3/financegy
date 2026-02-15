@@ -105,6 +105,7 @@ import pandas as pd
 #     result = search_securities(query="ddl")
 #     assert isinstance(result, list)
 
+
 # def test_get_recent_session():
 #     result = get_recent_session()
 #     assert isinstance(result, str)
