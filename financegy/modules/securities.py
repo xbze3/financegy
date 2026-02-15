@@ -521,7 +521,59 @@ def get_historical_trades(symbol: str, start_date: str, end_date: str, use_cache
     return parser.parse_get_historical_trades(start_date, end_date, html)
 
 
-def search_securities(query: str, use_cache=True):
+def get_security_full_history(symbol: str, use_cache: bool = True):
+    """
+    Get the full trade history for a security by fetching each available year
+    from earliest -> latest and concatenating all trades into one list.
+    """
+
+    symbol = symbol.strip().upper()
+
+    try:
+        earliest_year = get_security_earliest_year(symbol, use_cache=use_cache)
+        if not earliest_year:
+            raise ValueError(f"Could not determine earliest year for {symbol}")
+
+        latest_year = get_security_latest_year(symbol, use_cache=use_cache)
+        if not latest_year:
+            raise ValueError(f"Could not determine latest year for {symbol}")
+
+        if not str(earliest_year).isdigit() or not str(latest_year).isdigit():
+            raise ValueError(
+                f"Invalid year values for {symbol}: earliest={earliest_year}, latest={latest_year}"
+            )
+
+        start = int(earliest_year)
+        end = int(latest_year)
+
+        if end < start:
+            raise ValueError(
+                f"Latest year is earlier than earliest year for {symbol}: {start}..{end}"
+            )
+
+        full_trade_data = []
+
+        for year in range(start, end + 1):
+            year_trades = get_trades_for_year(symbol, str(year), use_cache=use_cache)
+
+            if year_trades is None:
+                continue
+
+            if not isinstance(year_trades, list):
+                raise ValueError(
+                    f"Expected list of trades for {symbol} year {year}, got {type(year_trades)}"
+                )
+
+            full_trade_data.extend(year_trades)
+
+        return full_trade_data
+
+    except Exception as e:
+        print(f"[get_security_full_history] Error building full history: {e}")
+        return None
+
+
+def search_securities(query: str):
     """Search securities by symbol or name (partial match)"""
 
     query = query.lower().strip()

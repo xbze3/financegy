@@ -24,6 +24,12 @@ import financegy
 # Get a list of all traded securities
 securities = financegy.get_securities()
 
+# Get active market securities (symbol + company name) from the most recent session page
+active_securities = financegy.get_active_securities()
+
+# Get the most recent trading session number
+recent_session = financegy.get_recent_session()
+
 # Get the full name of a security by its ticker symbol
 security_name = financegy.get_security_by_symbol("DDL")
 
@@ -41,6 +47,15 @@ price_change_percent = financegy.get_price_change_percent("DDL")
 
 # Get all trade data for the most recent year (for the security)
 recent_year_trades = financegy.get_security_recent_year("DDL")
+
+# Get the earliest financial year available for the security
+earliest_year = financegy.get_security_earliest_year("DDL")
+
+# Get the latest financial year available for the security
+latest_year = financegy.get_security_latest_year("DDL")
+
+# Get the full trade history for a security (all years combined)
+full_history = financegy.get_security_full_history("DDL")
 
 # Get trade data for a specific trading session (all securities)
 session_trades = financegy.get_session_trades("1136")
@@ -133,9 +148,14 @@ financegy.clear_cache(silent=True)
 | Function                                              | Description                                                                          |
 | ----------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | `get_securities()`                                    | Returns all currently traded securities on the GSE.                                  |
+| `get_active_securities()`                             | Returns active securities (symbol and company name) from the most recent session.    |
+| `get_recent_session()`                                | Returns the most recent trading session number.                                      |
 | `get_security_by_symbol(symbol)`                      | Returns the full security name for a ticker symbol.                                  |
 | `get_recent_trade(symbol)`                            | Returns the most recent trade information for the given security.                    |
 | `get_security_recent_year(symbol)`                    | Returns all trade data for the most recent year available for the selected security. |
+| `get_security_earliest_year(symbol)`                  | Returns the earliest financial year available for the selected security.             |
+| `get_security_latest_year(symbol)`                    | Returns the latest financial year available for the selected security.               |
+| `get_security_full_history(symbol)`                   | Returns the full trade history for the selected security across all available years. |
 | `get_session_trades(session)`                         | Returns trade data for all securities during a specific trading session.             |
 | `get_security_session_trade(symbol, session)`         | Returns trade data for a specific security during a specific session.                |
 | `search_securities(query)`                            | Searches securities whose names or ticker symbols match the given query.             |

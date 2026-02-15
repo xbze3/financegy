@@ -24,6 +24,7 @@ from financegy.modules.securities import (
     get_security_earliest_year,
     get_security_latest_year,
     get_historical_trades,
+    get_security_full_history,
 )
 
 from financegy.modules.market import get_active_securities
@@ -55,6 +56,7 @@ __all__ = [
     "get_security_earliest_year",
     "get_security_latest_year",
     "get_historical_trades",
+    "get_security_full_history",
     "calculate_position_value",
     "calculate_position_return",
     "calculate_position_return_percent",

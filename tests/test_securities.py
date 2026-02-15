@@ -81,19 +81,24 @@ import pandas as pd
 
 # def test_get_trades_for_year():
 #     result = get_trades_for_year(symbol="ddl", year="2020")
-#     assert isinstance(result, (list, type(None)))
+#     assert isinstance(result, list)
 
 
 # def test_get_historical_trades():
 #     result = get_historical_trades(
 #         symbol="ddl", start_date="06/2020", end_date="01/2022"
 #     )
-#     assert isinstance(result, (list, type(None)))
+#     assert isinstance(result, list)
+
+
+# def test_get_security_full_history():
+#     result = get_security_full_history("bdh")
+#     assert isinstance(result, list)
 
 
 # def test_get_sessions_volatility():
 #     result = get_sessions_volatility(symbol="dtc", session_number=3)
-#     assert isinstance(result, (dict, type(None)))
+#     assert isinstance(result, dict)
 
 
 # def test_search_securities():
