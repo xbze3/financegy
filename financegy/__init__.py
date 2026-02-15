@@ -21,6 +21,8 @@ from financegy.modules.securities import (
     search_securities,
     get_recent_session,
     get_trades_for_year,
+    get_security_earliest_year,
+    get_security_latest_year,
     get_historical_trades,
 )
 
@@ -50,6 +52,8 @@ __all__ = [
     "get_ytd_high_low",
     "search_securities",
     "get_trades_for_year",
+    "get_security_earliest_year",
+    "get_security_latest_year",
     "get_historical_trades",
     "calculate_position_value",
     "calculate_position_return",

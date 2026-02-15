@@ -103,6 +103,82 @@ def parse_get_recent_trade(html: str):
         return None
 
 
+def parse_get_security_earliest_year(html: str):
+    """Parse security financials page HTML and return the earliest available financial year."""
+
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+
+        year_info_html = soup.select_one("div.carousel.financials.financial-nav")
+        if not year_info_html:
+            raise ValueError(
+                "Could not find financial year carousel (div.carousel.financials.financial-nav)."
+            )
+
+        slides = year_info_html.select("div.slide")
+        if not slides:
+            raise ValueError("No year slides found in financial carousel.")
+
+        years = []
+
+        for i, slide in enumerate(slides, start=1):
+            year_text = slide.get_text(strip=True)
+
+            if not year_text:
+                raise ValueError(f"Slide {i}: year text is empty.")
+
+            if not year_text.isdigit():
+                raise ValueError(f"Slide {i}: invalid year format '{year_text}'.")
+
+            years.append(int(year_text))
+
+        if not years:
+            raise ValueError("No valid years extracted.")
+
+        earliest_year = min(years)
+
+        return str(earliest_year)
+
+    except Exception as e:
+        print(f"[parse_get_security_earliest_year] Error parsing HTML: {e}")
+        return None
+
+def parse_get_security_latest_year(html: str):
+    """Parse security page HTML and return the latest available financial year."""
+
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+
+        year_info_html = soup.select_one("div.carousel.financials.financial-nav")
+        if not year_info_html:
+            raise ValueError("Could not find financial year carousel (div.carousel.financials.financial-nav).")
+
+        slides = year_info_html.select("div.slide")
+        if not slides:
+            raise ValueError("No year slides found in financial carousel.")
+
+        years = []
+        for i, slide in enumerate(slides, start=1):
+            year_text = slide.get_text(strip=True)
+
+            if not year_text:
+                raise ValueError(f"Slide {i}: year text is empty.")
+
+            if not year_text.isdigit():
+                raise ValueError(f"Slide {i}: invalid year format '{year_text}'.")
+
+            years.append(int(year_text))
+
+        if not years:
+            raise ValueError("No valid years extracted.")
+
+        latest_year = max(years)
+        return str(latest_year)
+
+    except Exception as e:
+        print(f"[parse_get_security_latest_year] Error parsing HTML: {e}")
+        return None
+
 def parse_get_previous_close(html: str):
     """Extract selected security's most recent closing price"""
     try:

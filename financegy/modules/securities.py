@@ -98,6 +98,48 @@ def get_recent_trade(symbol: str, use_cache=True):
     return parser.parse_get_recent_trade(html)
 
 
+def get_security_earliest_year(symbol: str, use_cache=True):
+    """Get the earliest trading year for any of the traded securities"""
+
+    func_name = "get_security_earliest_year"
+
+    security_name = get_security_by_symbol(symbol)
+    security_name = security_name.lower().replace(" ", "-")
+
+    if use_cache:
+        cached = cache_manager.load_cache(func_name, symbol)
+        if cached:
+            return parser.parse_get_security_earliest_year(cached)
+
+    path = f"/security/{security_name}/"
+    html = request_handler.fetch_page(path)
+
+    cache_manager.save_cache(func_name, html, symbol)
+
+    return parser.parse_get_security_earliest_year(html)
+
+
+def get_security_latest_year(symbol: str, use_cache=True):
+    """Get the latest financial year available for a given security."""
+
+    func_name = "get_security_latest_year"
+
+    security_name = get_security_by_symbol(symbol)
+    security_name = security_name.lower().replace(" ", "-")
+
+    if use_cache:
+        cached = cache_manager.load_cache(func_name, symbol)
+        if cached:
+            return parser.parse_get_security_latest_year(cached)
+
+    path = f"/security/{security_name}/"
+    html = request_handler.fetch_page(path)
+
+    cache_manager.save_cache(func_name, html, symbol)
+
+    return parser.parse_get_security_latest_year(html)
+
+
 def get_previous_close(symbol: str, use_cache=True):
     """Get the most recent closing price for any of the traded securities"""
 

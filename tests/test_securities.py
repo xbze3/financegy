@@ -69,6 +69,16 @@ import pandas as pd
 #     assert isinstance(result, (dict, type(None)))
 
 
+# def test_get_security_earliest_year():
+#     result = get_security_earliest_year("bdh")
+#     assert isinstance(result, str)
+
+
+# def test_get_security_latest_year():
+#     result = get_security_latest_year("bdh")
+#     assert isinstance(result, str)
+
+
 # def test_get_trades_for_year():
 #     result = get_trades_for_year(symbol="ddl", year="2020")
 #     assert isinstance(result, (list, type(None)))
