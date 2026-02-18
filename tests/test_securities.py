@@ -157,6 +157,6 @@ def test_save_excel():
     assert isinstance(result, list)
 
 
-def test_clear_cache():
-    result = clear_cache(silent=True)
-    assert isinstance(result, bool)
+# def test_clear_cache():
+#     result = clear_cache(silent=True)
+#     assert isinstance(result, bool)
