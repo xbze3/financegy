@@ -11,14 +11,15 @@ def get_securities(use_cache=True):
     if use_cache:
         cached = cache_manager.load_cache(func_name)
         if cached:
-            return parser.parse_get_securities(cached)
+            return cached
 
     path = "/securities/"
     html = request_handler.fetch_page(path)
 
-    cache_manager.save_cache(func_name, html)
+    parsed_data = parser.parse_get_securities(html)
+    cache_manager.save_cache(func_name, parsed_data)
 
-    return parser.parse_get_securities(html)
+    return parsed_data
 
 
 def get_recent_session(use_cache=True):
@@ -29,14 +30,15 @@ def get_recent_session(use_cache=True):
     if use_cache:
         cached = cache_manager.load_cache(func_name)
         if cached:
-            return parser.parse_get_recent_session(cached)
+            return cached
 
     path = "/trades/"
     html = request_handler.fetch_page(path)
 
-    cache_manager.save_cache(func_name, html)
+    parsed_data = parser.parse_get_recent_session(html)
+    cache_manager.save_cache(func_name, parsed_data)
 
-    return parser.parse_get_recent_session(html)
+    return parsed_data
 
 
 def get_security_by_symbol(symbol: str):
@@ -67,14 +69,15 @@ def get_security_recent_year(symbol: str, use_cache=True):
     if use_cache:
         cached = cache_manager.load_cache(func_name, symbol)
         if cached:
-            return parser.parse_get_security_recent_year(cached)
+            return cached
 
     path = "/security/" + security_name
     html = request_handler.fetch_page(path)
 
-    cache_manager.save_cache(func_name, html, symbol)
+    parsed_data = parser.parse_get_security_recent_year(html)
+    cache_manager.save_cache(func_name, parsed_data, symbol)
 
-    return parser.parse_get_security_recent_year(html)
+    return parsed_data
 
 
 def get_recent_trade(symbol: str, use_cache=True):
@@ -88,14 +91,15 @@ def get_recent_trade(symbol: str, use_cache=True):
     if use_cache:
         cached = cache_manager.load_cache(func_name, symbol)
         if cached:
-            return parser.parse_get_recent_trade(cached)
+            return cached
 
     path = "/security/" + security_name
     html = request_handler.fetch_page(path)
 
-    cache_manager.save_cache(func_name, html, symbol)
+    parsed_data = parser.parse_get_recent_trade(html)
+    cache_manager.save_cache(func_name, parsed_data, symbol)
 
-    return parser.parse_get_recent_trade(html)
+    return parsed_data
 
 
 def get_security_earliest_year(symbol: str, use_cache=True):
@@ -109,14 +113,15 @@ def get_security_earliest_year(symbol: str, use_cache=True):
     if use_cache:
         cached = cache_manager.load_cache(func_name, symbol)
         if cached:
-            return parser.parse_get_security_earliest_year(cached)
+            return cached
 
     path = f"/security/{security_name}/"
     html = request_handler.fetch_page(path)
 
-    cache_manager.save_cache(func_name, html, symbol)
+    parsed_data = parser.parse_get_security_earliest_year(html)
+    cache_manager.save_cache(func_name, parsed_data, symbol)
 
-    return parser.parse_get_security_earliest_year(html)
+    return parsed_data
 
 
 def get_security_latest_year(symbol: str, use_cache=True):
@@ -130,14 +135,15 @@ def get_security_latest_year(symbol: str, use_cache=True):
     if use_cache:
         cached = cache_manager.load_cache(func_name, symbol)
         if cached:
-            return parser.parse_get_security_latest_year(cached)
+            return cached
 
     path = f"/security/{security_name}/"
     html = request_handler.fetch_page(path)
 
-    cache_manager.save_cache(func_name, html, symbol)
+    parsed_data = parser.parse_get_security_latest_year(html)
+    cache_manager.save_cache(func_name, parsed_data, symbol)
 
-    return parser.parse_get_security_latest_year(html)
+    return parsed_data
 
 
 def get_previous_close(symbol: str, use_cache=True):
@@ -151,14 +157,15 @@ def get_previous_close(symbol: str, use_cache=True):
     if use_cache:
         cached = cache_manager.load_cache(func_name, symbol)
         if cached:
-            return parser.parse_get_previous_close(cached)
+            return cached
 
     path = "/security/" + security_name
     html = request_handler.fetch_page(path)
 
-    cache_manager.save_cache(func_name, html, symbol)
+    parsed_data = parser.parse_get_previous_close(html)
+    cache_manager.save_cache(func_name, parsed_data, symbol)
 
-    return parser.parse_get_previous_close(html)
+    return parsed_data
 
 
 def get_price_change(symbol: str, use_cache=True):
@@ -172,14 +179,15 @@ def get_price_change(symbol: str, use_cache=True):
     if use_cache:
         cached = cache_manager.load_cache(func_name, symbol)
         if cached:
-            return parser.parse_get_price_change(cached)
+            return cached
 
     path = "/security/" + security_name
     html = request_handler.fetch_page(path)
 
-    cache_manager.save_cache(func_name, html, symbol)
+    parsed_data = parser.parse_get_price_change(html)
+    cache_manager.save_cache(func_name, parsed_data, symbol)
 
-    return parser.parse_get_price_change(html)
+    return parsed_data
 
 
 def get_price_change_percent(symbol: str, use_cache=True):
@@ -193,14 +201,15 @@ def get_price_change_percent(symbol: str, use_cache=True):
     if use_cache:
         cached = cache_manager.load_cache(func_name, symbol)
         if cached:
-            return parser.parse_get_price_change_percent(cached)
+            return cached
 
     path = "/security/" + security_name
     html = request_handler.fetch_page(path)
 
-    cache_manager.save_cache(func_name, html, symbol)
+    parsed_data = parser.parse_get_price_change_percent(html)
+    cache_manager.save_cache(func_name, parsed_data, symbol)
 
-    return parser.parse_get_price_change_percent(html)
+    return parsed_data
 
 
 def get_latest_session_for_symbol(symbol: str, use_cache: bool = True):
@@ -217,19 +226,18 @@ def get_latest_session_for_symbol(symbol: str, use_cache: bool = True):
     if use_cache:
         cached = cache_manager.load_cache(func_name, symbol)
         if cached:
-            return parser.parse_get_recent_trade(cached)
+            return cached
 
     path = "/security/" + security_name
     html = request_handler.fetch_page(path)
 
-    cache_manager.save_cache(func_name, html, symbol)
+    parsed_data = parser.parse_get_recent_trade(html)
+    cache_manager.save_cache(func_name, parsed_data, symbol)
 
-    recent = parser.parse_get_recent_trade(html)
-
-    if not recent or not recent.get("session"):
+    if not parsed_data or not parsed_data.get("session"):
         raise ValueError(f"Could not determine latest session for {symbol}")
 
-    return recent
+    return parsed_data
 
 
 def get_sessions_average_price(
@@ -238,7 +246,6 @@ def get_sessions_average_price(
     """Get the average last traded price of the security over a specified session range."""
 
     func_name = "get_sessions_average_price"
-
     start = int(session_start)
     end = int(session_end)
     symbol = symbol.strip().upper()
@@ -249,22 +256,22 @@ def get_sessions_average_price(
     prices_by_session: dict[int, float] = {}
 
     for session in range(start, end + 1):
-
-        html = None
         if use_cache:
-            html = cache_manager.load_cache(func_name, symbol, session)
-
-        if not html:
+            cached = cache_manager.load_cache(func_name, symbol, session)
+            if cached:
+                price = cached
+            else:
+                path = f"/financial_session/{session}/"
+                html = request_handler.fetch_page(path)
+                price = parser.parse_get_sessions_average_price(symbol, html)
+                cache_manager.save_cache(func_name, price, symbol, session)
+        else:
             path = f"/financial_session/{session}/"
             html = request_handler.fetch_page(path)
-            cache_manager.save_cache(func_name, html, symbol, session)
+            price = parser.parse_get_sessions_average_price(symbol, html)
 
-        price = parser.parse_get_sessions_average_price(symbol, html)
-
-        if price is None:
-            continue
-
-        prices_by_session[session] = price
+        if price is not None:
+            prices_by_session[session] = price
 
     if not prices_by_session:
         raise ValueError(f"No prices found for {symbol} in sessions {start}..{end}")
@@ -297,21 +304,22 @@ def get_average_price(symbol: str, session_number: int, use_cache=True):
     prices_by_session: dict[int, float] = {}
 
     for session in range(start, end + 1):
-        html = None
-
         if use_cache:
-            html = cache_manager.load_cache(func_name, symbol, session)
-
-        if not html:
+            cached = cache_manager.load_cache(func_name, symbol, session)
+            if cached:
+                price = cached
+            else:
+                path = f"/financial_session/{session}/"
+                html = request_handler.fetch_page(path)
+                price = parser.parse_get_average_price(symbol, html)
+                cache_manager.save_cache(func_name, price, symbol, session)
+        else:
             path = f"/financial_session/{session}/"
             html = request_handler.fetch_page(path)
-            cache_manager.save_cache(func_name, html, symbol, session)
+            price = parser.parse_get_average_price(symbol, html)
 
-        price = parser.parse_get_average_price(symbol, html)
-        if price is None:
-            continue
-
-        prices_by_session[session] = price
+        if price is not None:
+            prices_by_session[session] = price
 
     if not prices_by_session:
         raise ValueError(f"No prices found for {symbol} in sessions {start}..{end}")
@@ -338,14 +346,15 @@ def get_session_trades(session: str, use_cache=True):
     if use_cache:
         cached = cache_manager.load_cache(func_name, session)
         if cached:
-            return parser.parse_get_session_trades(cached)
+            return cached
 
     path = f"/financial_session/{session}/"
     html = request_handler.fetch_page(path)
 
-    cache_manager.save_cache(func_name, html, session)
+    parsed_data = parser.parse_get_session_trades(html)
+    cache_manager.save_cache(func_name, parsed_data, session)
 
-    return parser.parse_get_session_trades(html)
+    return parsed_data
 
 
 def get_security_session_trade(symbol: str, session: str, use_cache=True):
@@ -358,14 +367,15 @@ def get_security_session_trade(symbol: str, session: str, use_cache=True):
     if use_cache:
         cached = cache_manager.load_cache(func_name, symbol, session)
         if cached:
-            return parser.parse_get_security_session_trade(symbol, cached)
+            return cached
 
     path = f"/financial_session/{session}/"
     html = request_handler.fetch_page(path)
 
-    cache_manager.save_cache(func_name, html, symbol, session)
+    parsed_data = parser.parse_get_security_session_trade(symbol, html)
+    cache_manager.save_cache(func_name, parsed_data, symbol, session)
 
-    return parser.parse_get_security_session_trade(symbol, html)
+    return parsed_data
 
 
 def get_sessions_volatility(symbol: str, session_number: int, use_cache=True):
@@ -389,22 +399,23 @@ def get_sessions_volatility(symbol: str, session_number: int, use_cache=True):
     prices_by_session: dict[int, float] = {}
 
     func_name = "get_sessions_volatility"
-
     session = latest_session
     safety_limit = latest_session - (session_number * 5)
 
     while session >= 1 and session >= safety_limit and len(prices) < target_prices:
-
-        html = None
         if use_cache:
-            html = cache_manager.load_cache(func_name, symbol, session)
-
-        if not html:
+            cached = cache_manager.load_cache(func_name, symbol, session)
+            if cached:
+                price = cached
+            else:
+                path = f"/financial_session/{session}/"
+                html = request_handler.fetch_page(path)
+                price = parser.parse_get_session_ltp(symbol, html)
+                cache_manager.save_cache(func_name, price, symbol, session)
+        else:
             path = f"/financial_session/{session}/"
             html = request_handler.fetch_page(path)
-            cache_manager.save_cache(func_name, html, symbol, session)
-
-        price = parser.parse_get_session_ltp(symbol, html)
+            price = parser.parse_get_session_ltp(symbol, html)
 
         if price is not None:
             prices.append(price)
@@ -432,7 +443,6 @@ def get_sessions_volatility(symbol: str, session_number: int, use_cache=True):
     mean = sum(returns) / len(returns)
     variance = sum((r - mean) ** 2 for r in returns) / (len(returns) - 1)
     weekly_vol = round(math.sqrt(variance), 2)
-
     annualized_vol = round(weekly_vol * math.sqrt(52), 2)
 
     return {
@@ -456,36 +466,31 @@ def get_ytd_high_low(symbol: str, use_cache: bool = True):
     security_name = get_security_by_symbol(symbol)
     security_name = security_name.lower().replace(" ", "-")
 
-    html = None
     if use_cache:
-        html = cache_manager.load_cache(func_name, symbol)
+        cached = cache_manager.load_cache(func_name, symbol)
+        if cached:
+            return cached
 
-    if not html:
-        path = f"/security/{security_name}/"
-        html = request_handler.fetch_page(path)
-        cache_manager.save_cache(func_name, html, symbol)
-
-    result = parser.parse_get_ytd_high_low(html)
-    if not result:
+    path = f"/security/{security_name}/"
+    html = request_handler.fetch_page(path)
+    parsed_data = parser.parse_get_ytd_high_low(html)
+    if not parsed_data:
         raise ValueError(f"Could not compute YTD high/low for {symbol}")
+    cache_manager.save_cache(func_name, parsed_data, symbol)
 
-    return {
-        "symbol": symbol,
-        **result,
-    }
+    return parsed_data
 
 
 def get_trades_for_year(symbol: str, year: str, use_cache=True):
     """Get security trade information from a specific year"""
 
     func_name = "get_trades_for_year"
-
     symbol = symbol.strip().upper()
 
     if use_cache:
         cached = cache_manager.load_cache(func_name, symbol, year)
         if cached:
-            return parser.parse_get_trades_for_year(year, cached)
+            return cached
 
     security_name = get_security_by_symbol(symbol)
     security_name = security_name.lower().replace(" ", "-")
@@ -493,22 +498,22 @@ def get_trades_for_year(symbol: str, year: str, use_cache=True):
     path = f"/security/{security_name}/"
     html = request_handler.fetch_page(path)
 
-    cache_manager.save_cache(func_name, html, symbol, year)
+    parsed_data = parser.parse_get_trades_for_year(year, html)
+    cache_manager.save_cache(func_name, parsed_data, symbol, year)
 
-    return parser.parse_get_trades_for_year(year, html)
+    return parsed_data
 
 
 def get_historical_trades(symbol: str, start_date: str, end_date: str, use_cache=True):
     """Get historical trade data for a date range"""
 
     func_name = "get_historical_trades"
-
     symbol = symbol.strip().upper()
 
     if use_cache:
         cached = cache_manager.load_cache(func_name, symbol, start_date, end_date)
         if cached:
-            return parser.parse_get_historical_trades(start_date, end_date, cached)
+            return cached
 
     security_name = get_security_by_symbol(symbol)
     security_name = security_name.lower().replace(" ", "-")
@@ -516,9 +521,10 @@ def get_historical_trades(symbol: str, start_date: str, end_date: str, use_cache
     path = f"/security/{security_name}/"
     html = request_handler.fetch_page(path)
 
-    cache_manager.save_cache(func_name, html, symbol, start_date, end_date)
+    parsed_data = parser.parse_get_historical_trades(start_date, end_date, html)
+    cache_manager.save_cache(func_name, parsed_data, symbol, start_date, end_date)
 
-    return parser.parse_get_historical_trades(start_date, end_date, html)
+    return parsed_data
 
 
 def get_security_full_history(symbol: str, use_cache: bool = True):

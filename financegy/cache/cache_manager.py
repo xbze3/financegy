@@ -30,6 +30,10 @@ def load_cache(func_name, *args, max_age_days=7, **kwargs):
 
     timestamp = datetime.fromisoformat(data["timestamp"])
     if datetime.now() - timestamp > timedelta(days=max_age_days):
+        try:
+            os.remove(cache_path)
+        except Exception as e:
+            print(f"Failed to delete stale cache file {cache_path}: {e}")
         return None
 
     return data["value"]

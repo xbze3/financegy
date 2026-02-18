@@ -9,3 +9,4 @@ cache/
 .pypirc
 *.csv
 *.xlsx
+copy.txt

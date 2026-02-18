@@ -11,13 +11,14 @@ def get_active_securities(use_cache: bool = True):
     if use_cache:
         cached = cache_manager.load_cache(func_name)
         if cached:
-            return parser.parse_get_active_securities(cached)
+            return cached
 
     most_recent_session = sec.get_recent_session()
 
     path = f"/trade_session/{most_recent_session}"
     html = request_handler.fetch_page(path)
 
-    cache_manager.save_cache(func_name, html)
+    parsed_data = parser.parse_get_active_securities(html)
+    cache_manager.save_cache(func_name, parsed_data)
 
-    return parser.parse_get_active_securities(html)
+    return parsed_data
