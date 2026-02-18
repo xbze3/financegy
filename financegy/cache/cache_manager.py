@@ -17,7 +17,7 @@ def make_cache_key(func_name, *args, **kwargs):
     return f"{func_name}_{hashed}.json"
 
 
-def load_cache(func_name, *args, max_age_days=7, **kwargs):
+def load_cache(func_name, *args, max_age_days=3, **kwargs):
     os.makedirs(CACHE_DIR, exist_ok=True)
     cache_file = make_cache_key(func_name, *args, **kwargs)
     cache_path = os.path.join(CACHE_DIR, cache_file)
