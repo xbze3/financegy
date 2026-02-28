@@ -60,7 +60,7 @@ import pandas as pd
 
 
 # def test_get_average_price():
-#     result = get_average_price(symbol="ddl", session_number=31)
+#     result = get_average_price(symbol="ddl", session_number=5)
 #     assert isinstance(result, (dict, type(None)))
 
 

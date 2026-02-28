@@ -288,18 +288,36 @@ def get_sessions_average_price(
     }
 
 
-def get_average_price(symbol: str, session_number: int, use_cache=True):
+def get_average_price(symbol: str, session_number, use_cache=True):
     """Average LTP over the most recent `session_number` sessions (ending at latest session)."""
 
     func_name = "get_average_price"
     symbol = symbol.strip().upper()
 
-    if session_number <= 0:
+    if isinstance(session_number, str):
+        period = session_number.strip().upper()
+        period_map = {
+            "1M": 4,
+            "3M": 13,
+            "6M": 26,
+            "1Y": 52,
+        }
+        if period not in period_map:
+            raise ValueError(
+                "session_number must be a positive int or one of: 1M, 3M, 6M, 1Y"
+            )
+        session_number_requested = period
+        session_count = period_map[period]
+    else:
+        session_number_requested = session_number
+        session_count = session_number
+
+    if session_count <= 0:
         raise ValueError("session_number must be a positive integer")
 
     latest = get_latest_session_for_symbol(symbol, use_cache=use_cache)
     end = int(latest["session"])
-    start = max(1, end - session_number + 1)
+    start = max(1, end - session_count + 1)
 
     prices_by_session = {}
 
@@ -329,7 +347,7 @@ def get_average_price(symbol: str, session_number: int, use_cache=True):
     return {
         "symbol": symbol,
         "latest_session": latest,
-        "session_number_requested": session_number,
+        "session_number_requested": session_number_requested,
         "session_start": start,
         "session_end": end,
         "observations": len(prices_by_session),
