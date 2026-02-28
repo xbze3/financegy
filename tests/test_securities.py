@@ -14,7 +14,9 @@ import pandas as pd
 
 def test_get_movers():
     result = get_movers()
-    assert isinstance(result, (dict))
+    print(
+        f"\nGainers: {result['gainers']}\nLosers: {result['losers']}\nNo Change: {result['no_change']}"
+    )
 
 
 # def test_get_recent_trade():

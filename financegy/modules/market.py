@@ -3,6 +3,15 @@ from financegy.cache import cache_manager
 from financegy.core import parser, request_handler
 
 
+def to_float_clean(value):
+    if value is None:
+        return None
+    try:
+        return float(str(value).replace(",", ""))
+    except ValueError:
+        return None
+
+
 def get_movers(use_cache: bool = True):
     """Get the top market gainers and losers (%)"""
 
@@ -21,23 +30,41 @@ def get_movers(use_cache: bool = True):
 
     for security in active_securities:
         symbol = security["symbol"]
-        pct = sec.get_price_change_percent(symbol)
-        data = {
-            "symbol": symbol,
-            "price_change_percent": pct["price_change_percent"],
-            "last_trade_price": pct["recent_trade"]["last_trade_price"],
-            "previous_close": pct["previous_trade"]["last_trade_price"],
-        }
-
-        if pct["price_change_percent"] is None:
+        pct = sec.get_price_change_percent(symbol, use_cache=use_cache)
+        if not pct:
             continue
 
-        if pct["price_change_percent"] > 0:
+        change_pct = pct.get("price_change_percent")
+        if change_pct is None:
+            continue
+
+        prev_raw = pct["previous_trade"].get("last_trade_price")
+        recent_raw = pct["recent_trade"].get("last_trade_price")
+
+        try:
+            prev_price = to_float_clean(prev_raw)
+            recent_price = to_float_clean(recent_raw)
+        except (TypeError, ValueError):
+            prev_price = None
+            recent_price = None
+
+        price_change = None
+
+        if prev_price is not None and recent_price is not None:
+            price_change = recent_price - prev_price
+
+        data = {
+            "symbol": symbol,
+            "price_change": price_change,
+            "price_change_percent": change_pct,
+            "last_trade_price": recent_raw,
+            "previous_close": prev_raw,
+        }
+
+        if change_pct > 0:
             gainers.append(data)
-
-        elif pct["price_change_percent"] < 0:
+        elif change_pct < 0:
             losers.append(data)
-
         else:
             no_change.append(data)
 
