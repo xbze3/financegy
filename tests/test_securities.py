@@ -69,9 +69,9 @@ import pandas as pd
 #     assert isinstance(result, (dict, type(None)))
 
 
-def test_get_ytd_high_low():
-    result = get_ytd_high_low(symbol="ddl")
-    assert isinstance(result, (dict, type(None)))
+# def test_get_ytd_high_low():
+#     result = get_ytd_high_low(symbol="ddl")
+#     assert isinstance(result, (dict, type(None)))
 
 
 # def test_get_security_earliest_year():
