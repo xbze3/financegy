@@ -1,27 +1,16 @@
-from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
+from decimal import Decimal, ROUND_HALF_UP
 from financegy.modules import securities
-
-
-def _to_decimal(value, field_name="value"):
-    """
-    Convert strings/numbers to Decimal safely.
-    Handles commas like "3,000.0".
-    """
-    try:
-        clean_value = str(value).replace(",", "")
-        return Decimal(clean_value)
-    except (InvalidOperation, TypeError) as e:
-        raise ValueError(f"Invalid {field_name}: {value}") from e
+from financegy.helpers.to_decimal import to_decimal
 
 
 def calculate_position_value(symbol: str, shares):
     try:
-        shares = _to_decimal(shares, "shares")
+        shares = to_decimal(shares, "shares")
         if shares <= 0:
             raise ValueError("Shares must be greater than zero")
 
         last_trade = securities.get_recent_trade(symbol)
-        last_trade_price = _to_decimal(
+        last_trade_price = to_decimal(
             last_trade.get("last_trade_price"), "last_trade_price"
         )
 
@@ -38,8 +27,8 @@ def calculate_position_value(symbol: str, shares):
 
 def calculate_position_return(symbol: str, shares, purchase_price):
     try:
-        shares = _to_decimal(shares, "shares")
-        purchase_price = _to_decimal(purchase_price, "purchase_price")
+        shares = to_decimal(shares, "shares")
+        purchase_price = to_decimal(purchase_price, "purchase_price")
 
         if shares <= 0:
             raise ValueError("Shares must be greater than zero")
@@ -47,7 +36,7 @@ def calculate_position_return(symbol: str, shares, purchase_price):
             raise ValueError("Purchase price must be greater than zero")
 
         last_trade = securities.get_recent_trade(symbol)
-        last_trade_price = _to_decimal(
+        last_trade_price = to_decimal(
             last_trade.get("last_trade_price"), "last_trade_price"
         )
 
@@ -64,8 +53,8 @@ def calculate_position_return(symbol: str, shares, purchase_price):
 
 def calculate_position_return_percent(symbol, shares, purchase_price):
     try:
-        shares = _to_decimal(shares, "shares")
-        purchase_price = _to_decimal(purchase_price, "purchase_price")
+        shares = to_decimal(shares, "shares")
+        purchase_price = to_decimal(purchase_price, "purchase_price")
 
         if shares <= 0:
             raise ValueError("Shares must be greater than zero")
@@ -73,7 +62,7 @@ def calculate_position_return_percent(symbol, shares, purchase_price):
             raise ValueError("Purchase price must be greater than zero")
 
         last_trade = securities.get_recent_trade(symbol)
-        last_trade_price = _to_decimal(
+        last_trade_price = to_decimal(
             last_trade.get("last_trade_price"), "last_trade_price"
         )
 
@@ -100,8 +89,8 @@ def calculate_portfolio_summary(positions: list[dict]):
 
         for pos in positions:
             symbol = pos["symbol"]
-            shares = _to_decimal(pos.get("shares"), f"shares for {symbol}")
-            purchase_price = _to_decimal(
+            shares = to_decimal(pos.get("shares"), f"shares for {symbol}")
+            purchase_price = to_decimal(
                 pos.get("purchase_price"), f"purchase_price for {symbol}"
             )
 
@@ -111,7 +100,7 @@ def calculate_portfolio_summary(positions: list[dict]):
                 raise ValueError(f"Invalid purchase price for {symbol}")
 
             last_trade = securities.get_recent_trade(symbol)
-            last_trade_price = _to_decimal(
+            last_trade_price = to_decimal(
                 last_trade.get("last_trade_price"), f"last_trade_price for {symbol}"
             )
 

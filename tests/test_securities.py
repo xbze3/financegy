@@ -12,11 +12,9 @@ import pandas as pd
 #     assert isinstance(result, (str, type(None)))
 
 
-def test_get_movers():
-    result = get_movers()
-    print(
-        f"\nGainers: {result['gainers']}\nLosers: {result['losers']}\nNo Change: {result['no_change']}"
-    )
+# def test_get_movers():
+#     result = get_movers()
+#     assert isinstance(result, dict)
 
 
 # def test_get_recent_trade():
@@ -71,9 +69,9 @@ def test_get_movers():
 #     assert isinstance(result, (dict, type(None)))
 
 
-# def test_get_ytd_high_low():
-#     result = get_ytd_high_low(symbol="ddl")
-#     assert isinstance(result, (dict, type(None)))
+def test_get_ytd_high_low():
+    result = get_ytd_high_low(symbol="ddl")
+    assert isinstance(result, (dict, type(None)))
 
 
 # def test_get_security_earliest_year():
@@ -95,6 +93,11 @@ def test_get_movers():
 #     result = get_historical_trades(
 #         symbol="ddl", start_date="06/2020", end_date="01/2022"
 #     )
+#     assert isinstance(result, list)
+
+
+# def test_get_market_snapshot():
+#     result = get_market_snapshot()
 #     assert isinstance(result, list)
 
 
@@ -164,6 +167,6 @@ def test_get_movers():
 #     assert isinstance(result, list)
 
 
-# def test_clear_cache():
-#     result = clear_cache(silent=True)
-#     assert isinstance(result, bool)
+# # def test_clear_cache():
+# #     result = clear_cache(silent=True)
+# #     assert isinstance(result, bool)

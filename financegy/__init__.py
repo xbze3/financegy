@@ -27,7 +27,11 @@ from financegy.modules.securities import (
     get_security_full_history,
 )
 
-from financegy.modules.market import get_active_securities, get_movers
+from financegy.modules.market import (
+    get_active_securities,
+    get_movers,
+    get_market_snapshot,
+)
 
 from financegy.modules.portfolio import (
     calculate_position_value,
@@ -64,6 +68,7 @@ __all__ = [
     "calculate_portfolio_summary",
     "get_active_securities",
     "get_recent_session",
+    "get_market_snapshot",
     "clear_cache",
     "save_to_csv",
     "to_dataframe",

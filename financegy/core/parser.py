@@ -54,11 +54,13 @@ def parse_get_security_recent_year(html: str):
                 {
                     "session": safe_text(trade, "session"),
                     "session_date": safe_text(trade, "date"),
-                    "last_trade_price": safe_text(trade, "name"),
-                    "eps": safe_text(trade, "best bid"),
-                    "pe_ratio": safe_text(trade, "vol bid"),
-                    "dividends_paid_last_12_months": safe_text(trade, "best offer"),
-                    "dividend_yield": safe_text(trade, "vol offer"),
+                    "last_trade_price": to_float(safe_text(trade, "name")),
+                    "eps": to_float(safe_text(trade, "best bid")),
+                    "pe_ratio": to_float(safe_text(trade, "vol bid")),
+                    "dividends_paid_last_12_months": to_float(
+                        safe_text(trade, "best offer")
+                    ),
+                    "dividend_yield": to_float(safe_text(trade, "vol offer")),
                     "notes": safe_text(trade, "opening price"),
                 }
             )
@@ -88,11 +90,11 @@ def parse_get_recent_trade(html: str):
         recent_info = {
             "session": safe_text(recent, "session"),
             "session_date": safe_text(recent, "date"),
-            "last_trade_price": safe_text(recent, "name"),
-            "eps": safe_text(recent, "best bid"),
-            "pe_ratio": safe_text(recent, "vol bid"),
-            "dividends_paid_last_12_months": safe_text(recent, "best offer"),
-            "dividend_yield": safe_text(recent, "vol offer"),
+            "last_trade_price": to_float(safe_text(recent, "name")),
+            "eps": to_float(safe_text(recent, "best bid")),
+            "pe_ratio": to_float(safe_text(recent, "vol bid")),
+            "dividends_paid_last_12_months": to_float(safe_text(recent, "best offer")),
+            "dividend_yield": to_float(safe_text(recent, "vol offer")),
             "notes": safe_text(recent, "opening price"),
         }
 
@@ -143,6 +145,7 @@ def parse_get_security_earliest_year(html: str):
         print(f"[parse_get_security_earliest_year] Error parsing HTML: {e}")
         return None
 
+
 def parse_get_security_latest_year(html: str):
     """Parse security page HTML and return the latest available financial year."""
 
@@ -151,7 +154,9 @@ def parse_get_security_latest_year(html: str):
 
         year_info_html = soup.select_one("div.carousel.financials.financial-nav")
         if not year_info_html:
-            raise ValueError("Could not find financial year carousel (div.carousel.financials.financial-nav).")
+            raise ValueError(
+                "Could not find financial year carousel (div.carousel.financials.financial-nav)."
+            )
 
         slides = year_info_html.select("div.slide")
         if not slides:
@@ -179,6 +184,7 @@ def parse_get_security_latest_year(html: str):
         print(f"[parse_get_security_latest_year] Error parsing HTML: {e}")
         return None
 
+
 def parse_get_previous_close(html: str):
     """Extract selected security's most recent closing price"""
     try:
@@ -195,7 +201,7 @@ def parse_get_previous_close(html: str):
         recent = trades[-1]
 
         previous_close = {
-            "last_trade_price": safe_text(recent, "name"),
+            "last_trade_price": to_float(safe_text(recent, "name")),
         }
 
         return previous_close
@@ -225,21 +231,25 @@ def parse_get_price_change(html: str):
         recent = trades[-1]
         previous = trades[-2]
 
+        recent_price = to_float(safe_text(recent, "name"))
+        prev_price = to_float(safe_text(previous, "name"))
+
+        diff = None
+        if recent_price is not None and prev_price is not None:
+            diff = recent_price - prev_price
+
         price_change = {
             "recent_trade": {
                 "session": safe_text(recent, "session"),
                 "session_date": safe_text(recent, "date"),
-                "last_trade_price": safe_text(recent, "name"),
+                "last_trade_price": recent_price,
             },
             "previous_trade": {
                 "session": safe_text(previous, "session"),
                 "session_date": safe_text(previous, "date"),
-                "last_trade_price": safe_text(previous, "name"),
+                "last_trade_price": prev_price,
             },
-            "price_difference": str(
-                to_float(safe_text(recent, "name"))
-                - to_float(safe_text(previous, "name"))
-            ),
+            "price_difference": diff,
         }
 
         return price_change
@@ -280,12 +290,12 @@ def parse_get_price_change_percent(html: str):
             "recent_trade": {
                 "session": safe_text(recent, "session"),
                 "session_date": safe_text(recent, "date"),
-                "last_trade_price": safe_text(recent, "name"),
+                "last_trade_price": recent_price,
             },
             "previous_trade": {
                 "session": safe_text(previous, "session"),
                 "session_date": safe_text(previous, "date"),
-                "last_trade_price": safe_text(previous, "name"),
+                "last_trade_price": prev,
             },
             "price_change_percent": pct,
         }
@@ -385,13 +395,18 @@ def parse_get_ytd_high_low(html: str):
 
         trades = parse_get_trades_for_year(year, html)
         if not trades:
-            return None
+            return {
+                "year": int(year),
+                "high": None,
+                "low": None,
+            }
 
         best_high = None
         best_low = None
 
         for t in trades:
-            price = to_float(t.get("last_trade_price"))
+            v = t.get("last_trade_price")
+            price = v if isinstance(v, (int, float)) else to_float(v)
             if price is None:
                 continue
 
@@ -408,7 +423,11 @@ def parse_get_ytd_high_low(html: str):
                 best_low = entry
 
         if best_high is None or best_low is None:
-            return None
+            return {
+                "year": int(year),
+                "high": None,
+                "low": None,
+            }
 
         return {
             "year": int(year),
@@ -441,11 +460,13 @@ def parse_get_session_trades(html: str):
             session_data.append(
                 {
                     "symbol": safe_text(session, "mnemonic"),
-                    "last_trade_price": safe_text(session, "name"),
-                    "eps": safe_text(session, "best bid"),
-                    "pe_ratio": safe_text(session, "vol bid"),
-                    "dividends_paid_last_12_months": safe_text(session, "best offer"),
-                    "dividend_yield": safe_text(session, "vol offer"),
+                    "last_trade_price": to_float(safe_text(session, "name")),
+                    "eps": to_float(safe_text(session, "best bid")),
+                    "pe_ratio": to_float(safe_text(session, "vol bid")),
+                    "dividends_paid_last_12_months": to_float(
+                        safe_text(session, "best offer")
+                    ),
+                    "dividend_yield": to_float(safe_text(session, "vol offer")),
                     "notes": safe_text(session, "opening price"),
                 }
             )
@@ -471,17 +492,21 @@ def parse_get_security_session_trade(symbol: str, html: str):
         if not sessions:
             raise ValueError("No session data found.")
 
+        session_data = None
+
         for session in sessions:
             session_symbol = safe_text(session, "mnemonic")
 
             if session_symbol == symbol:
                 session_data = {
                     "symbol": safe_text(session, "mnemonic"),
-                    "last_trade_price": safe_text(session, "name"),
-                    "eps": safe_text(session, "best bid"),
-                    "pe_ratio": safe_text(session, "vol bid"),
-                    "dividends_paid_last_12_months": safe_text(session, "best offer"),
-                    "dividend_yield": safe_text(session, "vol offer"),
+                    "last_trade_price": to_float(safe_text(session, "name")),
+                    "eps": to_float(safe_text(session, "best bid")),
+                    "pe_ratio": to_float(safe_text(session, "vol bid")),
+                    "dividends_paid_last_12_months": to_float(
+                        safe_text(session, "best offer")
+                    ),
+                    "dividend_yield": to_float(safe_text(session, "vol offer")),
                     "notes": safe_text(session, "opening price"),
                 }
 
@@ -513,11 +538,13 @@ def parse_get_trades_for_year(year: str, html: str):
                 {
                     "session": safe_text(trade, "session"),
                     "session_date": safe_text(trade, "date"),
-                    "last_trade_price": safe_text(trade, "name"),
-                    "eps": safe_text(trade, "best bid"),
-                    "pe_ratio": safe_text(trade, "vol bid"),
-                    "dividends_paid_last_12_months": safe_text(trade, "best offer"),
-                    "dividend_yield": safe_text(trade, "vol offer"),
+                    "last_trade_price": to_float(safe_text(trade, "name")),
+                    "eps": to_float(safe_text(trade, "best bid")),
+                    "pe_ratio": to_float(safe_text(trade, "vol bid")),
+                    "dividends_paid_last_12_months": to_float(
+                        safe_text(trade, "best offer")
+                    ),
+                    "dividend_yield": to_float(safe_text(trade, "vol offer")),
                     "notes": safe_text(trade, "opening price"),
                 }
             )
@@ -669,13 +696,13 @@ def parse_get_historical_trades(start_date: str, end_date: str, html: str):
                         {
                             "session": safe_text(trade, "session"),
                             "session_date": safe_text(trade, "date"),
-                            "last_trade_price": safe_text(trade, "name"),
-                            "eps": safe_text(trade, "best bid"),
-                            "pe_ratio": safe_text(trade, "vol bid"),
-                            "dividends_paid_last_12_months": safe_text(
-                                trade, "best offer"
+                            "last_trade_price": to_float(safe_text(trade, "name")),
+                            "eps": to_float(safe_text(trade, "best bid")),
+                            "pe_ratio": to_float(safe_text(trade, "vol bid")),
+                            "dividends_paid_last_12_months": to_float(
+                                safe_text(trade, "best offer")
                             ),
-                            "dividend_yield": safe_text(trade, "vol offer"),
+                            "dividend_yield": to_float(safe_text(trade, "vol offer")),
                             "notes": safe_text(trade, "opening price"),
                         }
                     )

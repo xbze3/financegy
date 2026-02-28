@@ -301,7 +301,7 @@ def get_average_price(symbol: str, session_number: int, use_cache=True):
     end = int(latest["session"])
     start = max(1, end - session_number + 1)
 
-    prices_by_session: dict[int, float] = {}
+    prices_by_session = {}
 
     for session in range(start, end + 1):
         if use_cache:
@@ -473,9 +473,12 @@ def get_ytd_high_low(symbol: str, use_cache: bool = True):
 
     path = f"/security/{security_name}/"
     html = request_handler.fetch_page(path)
+
     parsed_data = parser.parse_get_ytd_high_low(html)
+
     if not parsed_data:
         raise ValueError(f"Could not compute YTD high/low for {symbol}")
+
     cache_manager.save_cache(func_name, parsed_data, symbol)
 
     return parsed_data
