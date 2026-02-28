@@ -27,7 +27,7 @@ from financegy.modules.securities import (
     get_security_full_history,
 )
 
-from financegy.modules.market import get_active_securities
+from financegy.modules.market import get_active_securities, get_movers
 
 from financegy.modules.portfolio import (
     calculate_position_value,
@@ -39,6 +39,7 @@ from financegy.modules.portfolio import (
 __all__ = [
     "get_securities",
     "get_security_by_symbol",
+    "get_movers",
     "get_recent_trade",
     "get_previous_close",
     "get_price_change",
