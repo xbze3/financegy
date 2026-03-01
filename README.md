@@ -86,14 +86,20 @@ latest_session = financegy.get_latest_session_for_symbol("DDL")
 # Average last traded price over a session range (inclusive)
 avg_price_range = financegy.get_sessions_average_price("DDL", "1100", "1136")
 
-# Average last traded price over the last N sessions (ending at latest session)
-avg_price_latest = financegy.get_average_price("DDL", 30)
+# Average last traded price over the last N sessions or 1M, 3M, 6M 1Y (ending at latest session)
+avg_price_latest = financegy.get_average_price("DDL", "1M")
 
 # Volatility over the last N sessions (weekly log-return volatility + annualized)
 volatility = financegy.get_sessions_volatility("DDL", 30)
 
 # Year-to-date high and low traded prices
 ytd_high_low = financegy.get_ytd_high_low("DDL")
+
+# Get top market gainers and losers (based on % price change)
+movers = financegy.get_movers()
+
+# Get overall market snapshot (Symbol | Name | LTP | Prev Close | Price Change | PC% | YTD High | YTD Low)
+market_snapshot = financegy.get_market_snapshot()
 
 # --------------------------
 # Portfolio / Position Calculations
@@ -150,6 +156,7 @@ financegy.clear_cache(silent=True)
 | `get_securities()`                                    | Returns all currently traded securities on the GSE.                                  |
 | `get_active_securities()`                             | Returns active securities (symbol and company name) from the most recent session.    |
 | `get_recent_session()`                                | Returns the most recent trading session number.                                      |
+| `get_session_date()`                                  | Returns the date for a specified trading session.                              |
 | `get_security_by_symbol(symbol)`                      | Returns the full security name for a ticker symbol.                                  |
 | `get_recent_trade(symbol)`                            | Returns the most recent trade information for the given security.                    |
 | `get_security_recent_year(symbol)`                    | Returns all trade data for the most recent year available for the selected security. |
@@ -164,16 +171,19 @@ financegy.clear_cache(silent=True)
 
 ### Analytics / Calculation Functions
 
-| Function                                                         | Description                                                     |
-| ---------------------------------------------------------------- | --------------------------------------------------------------- |
-| `get_previous_close(symbol)`                                     | Returns the most recent closing/last trade price.               |
-| `get_price_change(symbol)`                                       | Returns absolute price difference vs previous session close.    |
-| `get_price_change_percent(symbol)`                               | Returns percent price change vs previous session close.         |
-| `get_latest_session_for_symbol(symbol)`                          | Returns the latest trade dict for the symbol.                   |
-| `get_sessions_average_price(symbol, session_start, session_end)` | Returns the average last traded price over a session range.     |
-| `get_average_price(symbol, session_number)`                      | Returns the average last traded price over the last N sessions. |
-| `get_sessions_volatility(symbol, session_number)`                | Returns volatility over the last N sessions.                    |
-| `get_ytd_high_low(symbol)`                                       | Returns year-to-date highest and lowest traded prices.          |
+| Function                                                         | Description                                                                 |
+|------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| `get_previous_close(symbol)`                                     | Returns the most recent closing/last trade price.                          |
+| `get_price_change(symbol)`                                       | Returns absolute price difference vs previous session close.               |
+| `get_price_change_percent(symbol)`                               | Returns percent price change vs previous session close.                    |
+| `get_latest_session_for_symbol(symbol)`                          | Returns the latest trade dictionary for the symbol.                        |
+| `get_sessions_average_price(symbol, session_start, session_end)` | Returns the average last traded price over a session range.                |
+| `get_average_price(symbol, session_number)`                      | Returns the average last traded price over the last N sessions or 1M, 3M, 6M or 1Y.|
+| `get_sessions_volatility(symbol, session_number)`                | Returns volatility (log-return + annualized) over the last N sessions.     |
+| `get_ytd_high_low(symbol)`                                       | Returns year-to-date highest and lowest traded prices.                     |
+| `get_movers()`                                                   | Returns top market gainers, losers, and unchanged securities (% change).   |
+| `get_market_snapshot()`                                          | Returns overall market snapshot (Symbol, Company Name, LTP, Prev Close, Price Change, Price Change %, YTD High, YTD Low). |
+
 
 ### Portfolio / Position Functions
 

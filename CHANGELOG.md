@@ -15,3 +15,35 @@
 
 - All function signatures remain the same; this is a backward-compatible enhancement.
 - Users will notice dramatically faster response times, especially for historical or bulk data requests.
+
+---
+
+## v4.2.0 - 2026-02-28  
+
+### Added
+
+- `get_market_snapshot()` - Returns a consolidated market overview including latest price, previous close, price change, percentage change, and YTD high/low.
+- `get_movers()` - Returns top gainers, losers, and unchanged securities based on percentage price movement.
+- `get_session_date()` - Returns the date for a specified session.
+- Enhanced `get_average_price()` to support time-based shortcuts:
+  - `1M` - 1 month  
+  - `3M` - 3 months  
+  - `6M` - 6 months  
+  - `1Y` - 1 year  
+
+
+### Changed
+
+- All numeric values now return as floating-point numbers.
+  - Prices, percentage changes, volatility, averages, and calculated metrics are normalized to `float`.
+  - Removes original string formatting from the GSE website (e.g., comma-separated values).
+- `get_average_price()` now accepts:
+  - Integer session counts (previous behavior)
+  - Time-based shorthand strings (`1M`, `3M`, `6M`, `1Y`)
+
+
+### Notes
+
+- Minor breaking change: numeric values previously returned as formatted strings are now `float`.
+- Function signatures remain backward compatible.
+- This release improves analytical flexibility and data consistency for quantitative workflows.
