@@ -17,6 +17,11 @@ import pandas as pd
 #     assert isinstance(result, dict)
 
 
+# def test_get_session_date():
+#     result = get_session_date(session="1056")
+#     print(result)
+
+
 # def test_get_recent_trade():
 #     result = get_recent_trade(symbol="dtc")
 #     assert isinstance(result, (dict, type(None)))

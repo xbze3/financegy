@@ -517,6 +517,26 @@ def parse_get_security_session_trade(symbol: str, html: str):
         return None
 
 
+def parse_get_session_date(html: str):
+    """Extract session date for given security"""
+
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+
+        session = soup.find("div", class_="date")
+
+        if not session:
+            raise ValueError("Could not find 'div.date' section in HTML.")
+
+        session_date = session.text
+
+        return session_date
+
+    except Exception as e:
+        print(f"[parse_get_session_date] Error parsing HTML: {e}")
+        return None
+
+
 def parse_get_trades_for_year(year: str, html: str):
     """Get security trade information from a specific year"""
 

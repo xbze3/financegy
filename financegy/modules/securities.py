@@ -318,6 +318,7 @@ def get_average_price(symbol: str, session_number, use_cache=True):
     latest = get_latest_session_for_symbol(symbol, use_cache=use_cache)
     end = int(latest["session"])
     start = max(1, end - session_count + 1)
+    start_session_date = get_session_date(start)
 
     prices_by_session = {}
 
@@ -350,6 +351,7 @@ def get_average_price(symbol: str, session_number, use_cache=True):
         "session_number_requested": session_number_requested,
         "session_start": start,
         "session_end": end,
+        "session_start_date": start_session_date,
         "observations": len(prices_by_session),
         "average_price": avg,
         "prices_by_session": prices_by_session,
@@ -370,6 +372,25 @@ def get_session_trades(session: str, use_cache=True):
     html = request_handler.fetch_page(path)
 
     parsed_data = parser.parse_get_session_trades(html)
+    cache_manager.save_cache(func_name, parsed_data, session)
+
+    return parsed_data
+
+
+def get_session_date(session: str, use_cache=True):
+    """Get session date"""
+
+    func_name = "get_session_date"
+
+    if use_cache:
+        cached = cache_manager.load_cache(func_name, session)
+        if cached:
+            return cached
+
+    path = f"/financial_session/{session}/"
+    html = request_handler.fetch_page(path)
+
+    parsed_data = parser.parse_get_session_date(html)
     cache_manager.save_cache(func_name, parsed_data, session)
 
     return parsed_data
