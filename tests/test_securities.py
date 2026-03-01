@@ -1,5 +1,5 @@
-from financegy import *
-import pandas as pd
+# from financegy import *
+# import pandas as pd
 
 
 # def test_get_securities():
@@ -19,7 +19,7 @@ import pandas as pd
 
 # def test_get_session_date():
 #     result = get_session_date(session="1056")
-#     print(result)
+#     assert isinstance(result, str)
 
 
 # def test_get_recent_trade():
