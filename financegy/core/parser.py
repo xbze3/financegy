@@ -541,7 +541,7 @@ from bs4 import BeautifulSoup
 
 
 def parse_get_traded_years(html: str):
-    """Get traded years for a specified security"""
+    """Get traded years for a selected security"""
 
     try:
         soup = BeautifulSoup(html, "html.parser")
@@ -577,10 +577,6 @@ def parse_get_traded_years(html: str):
     except Exception as e:
         print(f"[parse_get_traded_years] Error parsing HTML: {e}")
         return None
-
-    # except Exception as e:
-    #     print(f"[parse_get_security_earliest_year] Error parsing HTML: {e}")
-    #     return None
 
 
 def parse_get_trades_for_year(year: str, html: str):
