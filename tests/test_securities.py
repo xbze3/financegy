@@ -1,5 +1,5 @@
-# from financegy import *
-# import pandas as pd
+from financegy import *
+import pandas as pd
 
 
 # def test_get_securities():
@@ -45,6 +45,11 @@
 # def test_get_security_recent_year():
 #     result = get_security_recent_year(symbol="RBL")
 #     assert isinstance(result, (list, type(None)))
+
+
+# def test_get_traded_years():
+#     result = get_traded_years("DDL")
+#     assert isinstance(result, list)
 
 
 # def test_get_session_trades():

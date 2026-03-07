@@ -377,6 +377,29 @@ def get_session_trades(session: str, use_cache=True):
     return parsed_data
 
 
+def get_traded_years(symbol: str, use_cache=True):
+    """Get traded years for specified security"""
+
+    func_name = "get_traded_years"
+    symbol = symbol.strip().upper()
+
+    security_name = get_security_by_symbol(symbol)
+    security_name = security_name.lower().replace(" ", "-")
+
+    if use_cache:
+        cached = cache_manager.load_cache(func_name, symbol)
+        if cached:
+            return cached
+
+    path = f"/security/{security_name}/"
+    html = request_handler.fetch_page(path)
+
+    parsed_data = parser.parse_get_traded_years(html)
+    cache_manager.save_cache(func_name, parsed_data, symbol)
+
+    return parsed_data
+
+
 def get_session_date(session: str, use_cache=True):
     """Get session date"""
 
@@ -514,10 +537,6 @@ def get_ytd_high_low(symbol: str, use_cache: bool = True):
     html = request_handler.fetch_page(path)
 
     parsed_data = parser.parse_get_ytd_high_low(html)
-
-    if not parsed_data:
-        raise ValueError(f"Could not compute YTD high/low for {symbol}")
-
     cache_manager.save_cache(func_name, parsed_data, symbol)
 
     return parsed_data

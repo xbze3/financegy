@@ -26,6 +26,7 @@ from financegy.modules.securities import (
     get_historical_trades,
     get_security_full_history,
     get_session_date,
+    get_traded_years,
 )
 
 from financegy.modules.market import (
@@ -70,6 +71,7 @@ __all__ = [
     "get_active_securities",
     "get_recent_session",
     "get_market_snapshot",
+    "get_traded_years",
     "get_session_date",
     "clear_cache",
     "save_to_csv",

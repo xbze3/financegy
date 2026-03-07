@@ -537,6 +537,52 @@ def parse_get_session_date(html: str):
         return None
 
 
+from bs4 import BeautifulSoup
+
+
+def parse_get_traded_years(html: str):
+    """Get traded years for a specified security"""
+
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+
+        year_info_html = soup.select_one("div.carousel.financials.financial-nav")
+        if not year_info_html:
+            raise ValueError(
+                "Could not find financial year carousel (div.carousel.financials.financial-nav)."
+            )
+
+        slides = year_info_html.select("div.slide")
+        if not slides:
+            raise ValueError("No year slides found in financial carousel.")
+
+        years = []
+
+        for i, slide in enumerate(slides, start=1):
+            year_text = slide.get_text(strip=True)
+
+            if not year_text:
+                raise ValueError(f"Slide {i}: year text is empty.")
+
+            if not year_text.isdigit():
+                raise ValueError(f"Slide {i}: invalid year format '{year_text}'.")
+
+            years.append(year_text)
+
+        if not years:
+            raise ValueError("No valid years extracted.")
+
+        return years
+
+    except Exception as e:
+        print(f"[parse_get_traded_years] Error parsing HTML: {e}")
+        return None
+
+    # except Exception as e:
+    #     print(f"[parse_get_security_earliest_year] Error parsing HTML: {e}")
+    #     return None
+
+
 def parse_get_trades_for_year(year: str, html: str):
     """Get security trade information from a specific year"""
 
