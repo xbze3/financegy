@@ -1,3 +1,15 @@
+## v4.2.3 - 2026-03-13
+
+### Added
+
+- `get_year_sessions()` - Returns all sessions for a selected trading year.
+
+### Notes
+
+- Minor feature addition.
+
+---
+
 ## v4.2.1 - 2026-03-06
 
 ### Added

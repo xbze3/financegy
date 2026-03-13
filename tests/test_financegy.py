@@ -1,5 +1,5 @@
-# from financegy import *
-# import pandas as pd
+from financegy import *
+import pandas as pd
 
 
 # def test_get_securities():
@@ -109,6 +109,12 @@
 # def test_get_market_snapshot():
 #     result = get_market_snapshot()
 #     assert isinstance(result, list)
+
+
+def test_get_year_sessions():
+    result = get_year_sessions("2020")
+    print(result)
+    assert isinstance(result, dict)
 
 
 # def test_get_security_full_history():

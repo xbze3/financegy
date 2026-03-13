@@ -1,5 +1,6 @@
 from financegy.core import request_handler, parser
 from financegy.cache import cache_manager
+from datetime import datetime
 import math
 
 
@@ -373,6 +374,54 @@ def get_session_trades(session: str, use_cache=True):
 
     parsed_data = parser.parse_get_session_trades(html)
     cache_manager.save_cache(func_name, parsed_data, session)
+
+    return parsed_data
+
+
+def get_year_sessions(year: str, use_cache=True):
+    """Get all sessions in a selected year"""
+
+    func_name = "get_year_sessions"
+    current_year = datetime.now().year
+
+    if year is None:
+        raise ValueError("Year cannot be None")
+
+    if not str(year).isdigit():
+        raise ValueError(f"Invalid year value: {year}")
+
+    year = int(year)
+
+    if year > current_year:
+        raise ValueError(f"Invalid year passed: {year} is in the future")
+
+    if use_cache:
+        cached = cache_manager.load_cache(func_name, year)
+        if cached:
+            return cached
+
+    if year == current_year:
+        path = "/financials/"
+    else:
+        path = f"/financials/{year}-2/"
+
+    html = request_handler.fetch_page(path)
+
+    session_data = parser.parse_get_year_sessions(html)
+
+    if not session_data:
+        return None
+
+    year_session_data = []
+
+    for session in session_data:
+        year_session_data.append(
+            {"session": session, "date": get_session_date(session)}
+        )
+
+    parsed_data = {"year": year, "sessions": year_session_data}
+
+    cache_manager.save_cache(func_name, parsed_data, year)
 
     return parsed_data
 

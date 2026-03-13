@@ -30,6 +30,9 @@ active_securities = financegy.get_active_securities()
 # Get the most recent trading session number
 recent_session = financegy.get_recent_session()
 
+# Get all sessions for a selected trading year
+year_sessions = get_year_sessions("2020")
+
 # Get the full name of a security by its ticker symbol
 security_name = financegy.get_security_by_symbol("DDL")
 
@@ -171,6 +174,7 @@ financegy.clear_cache(silent=True)
 | `get_security_latest_year(symbol)`                    | Returns the latest financial year available for the selected security.               |
 | `get_security_full_history(symbol)`                   | Returns the full trade history for the selected security across all available years. |
 | `get_session_trades(session)`                         | Returns trade data for all securities during a specific trading session.             |
+| `get_year_sessions(year)`                             | Returns all sessions for a selected trading year.                                    |
 | `get_security_session_trade(symbol, session)`         | Returns trade data for a specific security during a specific session.                |
 | `search_securities(query)`                            | Searches securities whose names or ticker symbols match the given query.             |
 | `get_trades_for_year(symbol, year)`                   | Returns all trade records for a specific security during a given year.               |

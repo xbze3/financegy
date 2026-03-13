@@ -478,6 +478,38 @@ def parse_get_session_trades(html: str):
         return None
 
 
+def parse_get_year_sessions(html: str):
+    """Extract sessions in selected year"""
+
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+
+        year_session_info_html = soup.find("div", class_="year session-list")
+        if not year_session_info_html:
+            raise ValueError("Could not find 'div.year session-list' section in HTML.")
+
+        sessions = year_session_info_html.find_all("a")
+        if not sessions:
+            raise ValueError("No session data found.")
+
+        year_sessions = []
+
+        for session in sessions:
+            text = session.get_text(strip=True)
+            parts = text.split()
+
+            if len(parts) < 2:
+                continue
+
+            year_sessions.append(parts[1])
+
+        return year_sessions
+
+    except Exception as e:
+        print(f"[parse_get_year_sessions] Error parsing HTML: {e}")
+        return None
+
+
 def parse_get_security_session_trade(symbol: str, html: str):
     """Extract session data for given security"""
 
@@ -535,9 +567,6 @@ def parse_get_session_date(html: str):
     except Exception as e:
         print(f"[parse_get_session_date] Error parsing HTML: {e}")
         return None
-
-
-from bs4 import BeautifulSoup
 
 
 def parse_get_traded_years(html: str):
