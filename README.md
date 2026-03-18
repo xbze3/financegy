@@ -150,6 +150,9 @@ df = financegy.to_dataframe(securities)
 financegy.save_to_csv(securities, filename="securities.csv", silent=True)
 financegy.save_to_excel(securities, filename="securities.xlsx", silent=True)
 
+# Purge invalid cache files (not from the current week)
+financegy.purge_old_cache_files()
+
 # Clear FinanceGY cache directory
 financegy.clear_cache(silent=True)
 ```
@@ -206,23 +209,27 @@ financegy.clear_cache(silent=True)
 
 ### Utilities
 
-| Function                                                               | Description                                                   |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------- |
-| `to_dataframe(data)`                                                   | Converts FinanceGY list/dict results into a pandas DataFrame. |
-| `save_to_csv(data, filename="output.csv", path=None, silent=False)`    | Saves data to a CSV file.                                     |
-| `save_to_excel(data, filename="output.xlsx", path=None, silent=False)` | Saves data to an Excel file.                                  |
-| `clear_cache(silent=False)`                                            | Completely clears the FinanceGY cache directory.              |
+| Function                                                               | Description                                                    |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `to_dataframe(data)`                                                   | Converts FinanceGY list/dict results into a pandas DataFrame.  |
+| `save_to_csv(data, filename="output.csv", path=None, silent=False)`    | Saves data to a CSV file.                                      |
+| `save_to_excel(data, filename="output.xlsx", path=None, silent=False)` | Saves data to an Excel file.                                   |
+| `purge_old_cache_files()`                                              | Purges invalid cache files from the FinanceGY cache directory. |
+| `clear_cache(silent=False)`                                            | Completely clears the FinanceGY cache directory.               |
 
 ---
 
 ## Caching System
 
-FinanceGY includes a lightweight local caching system designed to speed up repeated requests and reduce unnecessary calls.
+FinanceGY includes a lightweight local caching system designed to speed up repeated requests and reduce unnecessary API calls.
 
 Whenever you call a data retrieval function (such as `get_securities()` or `get_recent_trade()`), FinanceGY automatically checks whether a cached response already exists for that specific query:
 
-- If a valid cache file (less than 3 days old) is found, the result is returned instantly from the cache.
-- If the cache is missing, disabled, or older than one week, FinanceGY fetches fresh data from the GSE and updates the cache automatically.
+If a valid cache file from the current week (Monday-Sunday) is found, the result is returned instantly from the cache.
+
+If the cache is missing, corrupted, or belongs to a previous week, it is automatically deleted, and fresh data is fetched from the GSE and stored.
+
+Cache validity is determined based on a weekly cycle. At Monday 00:00, all previously stored cache entries are considered expired. Stale cache files are removed automatically when accessed, ensuring the cache remains clean and up to date without requiring manual intervention.
 
 All cache files are stored in a local `cache/` directory as small JSON files containing the retrieved data and a timestamp.
 
@@ -235,6 +242,14 @@ financegy.clear_cache()
 ```
 
 This will delete all cached files and force the next data request to fetch fresh data directly from the source.
+
+You can also choose to only clear invalid cache files (not from the current week):
+
+```python
+import financegy
+
+financegy.purge_old_cache_files()
+```
 
 If you prefer to bypass the cache for a specific call, simply pass `use_cache=False` to any function. For example:
 

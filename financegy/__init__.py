@@ -1,6 +1,6 @@
 """FinanceGY - a Python library for accessing data from the Guyana Stock Exchange."""
 
-from financegy.cache.cache_manager import clear_cache
+from financegy.cache.cache_manager import clear_cache, purge_old_cache_files
 from financegy.utils.utils import save_to_csv, to_dataframe, save_to_excel
 
 from financegy.modules.securities import (
@@ -76,6 +76,7 @@ __all__ = [
     "get_session_date",
     "get_year_sessions",
     "clear_cache",
+    "purge_old_cache_files",
     "save_to_csv",
     "to_dataframe",
     "save_to_excel",

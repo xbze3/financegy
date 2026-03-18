@@ -111,10 +111,9 @@ import pandas as pd
 #     assert isinstance(result, list)
 
 
-def test_get_year_sessions():
-    result = get_year_sessions("2020")
-    print(result)
-    assert isinstance(result, dict)
+# def test_get_year_sessions():
+#     result = get_year_sessions("2020")
+#     assert isinstance(result, dict)
 
 
 # def test_get_security_full_history():
@@ -181,6 +180,12 @@ def test_get_year_sessions():
 #     result = get_securities()
 #     save_to_excel(result, silent=True)
 #     assert isinstance(result, list)
+
+
+# def test_purge_old_cache_files():
+#     result = purge_old_cache_files()
+#     print(result)
+#     assert isinstance(result, bool)
 
 
 # # def test_clear_cache():

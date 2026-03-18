@@ -1,3 +1,19 @@
+## v4.3 - 2026-03-18
+
+### Added
+
+- `purge_old_cache_files()` - Purges invalid cache files (not from the current week, Monday 00:00 -> Sunday)
+
+### Changed
+
+- Cache expiration logic updated from a fixed time-based system (max_age_days) to a weekly invalidation model (resets every Monday at 00:00)
+
+### Notes
+
+- Non-breaking update to cache invalidation logic
+
+---
+
 ## v4.2.3 - 2026-03-13
 
 ### Added
