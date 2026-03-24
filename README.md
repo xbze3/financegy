@@ -33,6 +33,9 @@ recent_session = financegy.get_recent_session()
 # Get all sessions for a selected trading year
 year_sessions = get_year_sessions("2020")
 
+# Get trade snapshots for all sessions in a selected year
+year_sessions_snapshot = get_year_sessions_snapshot("2020")
+
 # Get the full name of a security by its ticker symbol
 security_name = financegy.get_security_by_symbol("DDL")
 
@@ -178,6 +181,7 @@ financegy.clear_cache(silent=True)
 | `get_security_full_history(symbol)`                   | Returns the full trade history for the selected security across all available years. |
 | `get_session_trades(session)`                         | Returns trade data for all securities during a specific trading session.             |
 | `get_year_sessions(year)`                             | Returns all sessions for a selected trading year.                                    |
+| `get_year_sessions_snapshot(year)`                    | Returns trade snapshots for all sessions in a selected year.                         |
 | `get_security_session_trade(symbol, session)`         | Returns trade data for a specific security during a specific session.                |
 | `search_securities(query)`                            | Searches securities whose names or ticker symbols match the given query.             |
 | `get_trades_for_year(symbol, year)`                   | Returns all trade records for a specific security during a given year.               |
@@ -243,13 +247,15 @@ financegy.clear_cache()
 
 This will delete all cached files and force the next data request to fetch fresh data directly from the source.
 
-You can also choose to only clear invalid cache files (not from the current week):
+You can also choose to only clear invalid cache files (not from the current week).:
 
 ```python
 import financegy
 
 financegy.purge_old_cache_files()
 ```
+
+**Note:** This will be done automatically if the system ever tries to access a cache file and finds it is stale.\*
 
 If you prefer to bypass the cache for a specific call, simply pass `use_cache=False` to any function. For example:
 

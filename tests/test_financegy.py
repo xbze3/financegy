@@ -111,6 +111,11 @@ import pandas as pd
 #     assert isinstance(result, list)
 
 
+# def test_get_year_sessions_snapshot():
+#     result = get_year_sessions_snapshot("2026")
+#     assert isinstance(result, dict)
+
+
 # def test_get_year_sessions():
 #     result = get_year_sessions("2020")
 #     assert isinstance(result, dict)
@@ -184,7 +189,6 @@ import pandas as pd
 
 # def test_purge_old_cache_files():
 #     result = purge_old_cache_files()
-#     print(result)
 #     assert isinstance(result, bool)
 
 

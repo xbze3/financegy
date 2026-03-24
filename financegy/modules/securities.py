@@ -426,6 +426,47 @@ def get_year_sessions(year: str, use_cache=True):
     return parsed_data
 
 
+def get_year_sessions_snapshot(year: str, use_cache=True):
+    """Get trade snapshots for all sessions in a selected year"""
+
+    func_name = "get_year_sessions_snapshot"
+
+    if year is None:
+        raise ValueError("Year cannot be None")
+
+    if not str(year).isdigit():
+        raise ValueError(f"Invalid year value: {year}")
+
+    if use_cache:
+        cached = cache_manager.load_cache(func_name, year)
+        if cached:
+            return cached
+
+    year_sessions = get_year_sessions(year, use_cache=use_cache)
+
+    if not year_sessions or not year_sessions.get("sessions"):
+        return None
+
+    snapshot_data = []
+
+    for item in year_sessions["sessions"]:
+        session = item["session"]
+        date = item.get("date")
+
+        try:
+            trades = get_session_trades(session, use_cache=use_cache)
+        except Exception:
+            trades = None
+
+        snapshot_data.append({"session": session, "date": date, "trades": trades})
+
+    parsed_data = {"year": int(year), "sessions": snapshot_data}
+
+    cache_manager.save_cache(func_name, parsed_data, year)
+
+    return parsed_data
+
+
 def get_traded_years(symbol: str, use_cache=True):
     """Get traded years for specified security"""
 

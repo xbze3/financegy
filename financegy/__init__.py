@@ -28,6 +28,7 @@ from financegy.modules.securities import (
     get_session_date,
     get_year_sessions,
     get_traded_years,
+    get_year_sessions_snapshot,
 )
 
 from financegy.modules.market import (
@@ -72,6 +73,7 @@ __all__ = [
     "get_active_securities",
     "get_recent_session",
     "get_market_snapshot",
+    "get_year_sessions_snapshot",
     "get_traded_years",
     "get_session_date",
     "get_year_sessions",

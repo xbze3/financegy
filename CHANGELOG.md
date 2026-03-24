@@ -1,3 +1,19 @@
+## v4.5 - 2026-03-24
+
+### Added
+
+- `get_year_sessions_snapshot(year)` - Returns trade snapshots for all sessions in a selected year.
+
+### Changed
+
+- Accessing a stale cache entry now triggers a purge of all stale cache files.
+
+### Notes
+
+- Non-breaking update to cache load logic
+
+---
+
 ## v4.3 - 2026-03-18
 
 ### Added

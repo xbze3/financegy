@@ -24,7 +24,8 @@ def make_cache_key(func_name, *args, **kwargs):
 def load_cache(func_name, *args, **kwargs):
     """
     Load cache if it exists and is from the current week.
-    If stale or corrupted, delete it.
+    If the requested cache file is stale, purge all stale cache files.
+    If the requested file is corrupted, delete it.
     """
     os.makedirs(CACHE_DIR, exist_ok=True)
 
@@ -43,9 +44,9 @@ def load_cache(func_name, *args, **kwargs):
 
         if timestamp < week_start:
             try:
-                os.remove(cache_path)
+                purge_old_cache_files()
             except Exception as e:
-                print(f"Failed to delete stale cache file {cache_path}: {e}")
+                print(f"Failed to purge stale cache files: {e}")
             return None
 
         return data["value"]
