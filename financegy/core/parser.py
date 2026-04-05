@@ -719,6 +719,9 @@ def parse_get_active_securities(html: str):
             if not symbol:
                 raise ValueError(f"Row {i}: symbol text is empty.")
 
+            if symbol.lower() in {"hcl", "cjl"}:
+                continue
+
             securities.append({"symbol": symbol, "name": name})
 
         return securities

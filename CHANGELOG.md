@@ -1,3 +1,15 @@
+## v4.6 - 2026-04-04
+
+### Changed
+
+- Updated the get_active_securities function to exclude CJL and HCL, as, to my knowledge, these securities are no longer active and contain incomplete data.
+
+### Notes
+
+- Non-breaking update to cache load logic
+
+---
+
 ## v4.5 - 2026-03-24
 
 ### Added
