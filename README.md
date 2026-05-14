@@ -268,12 +268,6 @@ By default, caching is enabled for all supported functions unless explicitly tur
 
 ---
 
-## License
-
-This project is licensed under the **MIT License**
-
----
-
 ## Example Use Case
 
 ```python
