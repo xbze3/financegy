@@ -110,6 +110,9 @@ import pandas as pd
 #     result = get_market_snapshot()
 #     assert isinstance(result, list)
 
+# def test_get_52_week_range():
+#     result = get_52_week_range("DDL")
+#     assert isinstance(result, dict)
 
 # def test_get_year_sessions_snapshot():
 #     result = get_year_sessions_snapshot("2026")
@@ -195,3 +198,5 @@ import pandas as pd
 # # def test_clear_cache():
 # #     result = clear_cache(silent=True)
 # #     assert isinstance(result, bool)
+
+

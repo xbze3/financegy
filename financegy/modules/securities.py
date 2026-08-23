@@ -1,6 +1,6 @@
 from financegy.core import request_handler, parser
 from financegy.cache import cache_manager
-from datetime import datetime
+from datetime import datetime, timedelta
 import math
 
 
@@ -743,3 +743,117 @@ def search_securities(query: str):
     ]
 
     return matches
+
+
+def get_52_week_range(symbol: str, use_cache: bool = True):
+    """
+    Return the lowest and highest traded price for a security over the
+    trailing 52 weeks, measured from the date of its most recent trade.
+
+    """
+
+    func_name = "get_52_week_range"
+    symbol = symbol.strip().upper()
+
+    if use_cache:
+        cached = cache_manager.load_cache(func_name, symbol)
+        if cached:
+            return cached
+
+    trades = get_security_full_history(symbol, use_cache=use_cache)
+
+    if not trades:
+        raise ValueError(f"No trade history found for {symbol}")
+
+    parsed_trades = []
+
+    for trade in trades:
+        if not isinstance(trade, dict):
+            continue
+
+        date_value = trade.get("session_date") or trade.get("date")
+        price_value = (
+            trade.get("last_trade_price")
+            if trade.get("last_trade_price") is not None
+            else trade.get("ltp")
+        )
+
+        if not date_value or price_value is None:
+            continue
+
+        trade_date = None
+
+        for date_format in ("%d/%m/%Y", "%Y-%m-%d", "%d-%m-%Y"):
+            try:
+                trade_date = datetime.strptime(
+                    str(date_value).strip(),
+                    date_format,
+                )
+                break
+            except ValueError:
+                continue
+
+        if trade_date is None:
+            continue
+
+        try:
+            price = float(price_value)
+        except (TypeError, ValueError):
+            continue
+
+        if not math.isfinite(price) or price <= 0:
+            continue
+
+        parsed_trades.append(
+            {
+                "date": trade_date,
+                "price": price,
+            }
+        )
+
+    if not parsed_trades:
+        raise ValueError(
+            f"No valid dated trade prices found for {symbol}"
+        )
+
+    latest_trade_date = max(
+        trade["date"] for trade in parsed_trades
+    )
+
+    range_start = latest_trade_date - timedelta(weeks=52)
+
+    trades_52w = [
+        trade
+        for trade in parsed_trades
+        if range_start <= trade["date"] <= latest_trade_date
+    ]
+
+    if not trades_52w:
+        raise ValueError(
+            f"No trades found for {symbol} in the trailing 52 weeks"
+        )
+
+    low_trade = min(
+        trades_52w,
+        key=lambda trade: trade["price"],
+    )
+
+    high_trade = max(
+        trades_52w,
+        key=lambda trade: trade["price"],
+    )
+
+    result = {
+        "symbol": symbol,
+        "range_start": range_start.strftime("%Y-%m-%d"),
+        "range_end": latest_trade_date.strftime("%Y-%m-%d"),
+        "observations": len(trades_52w),
+        "low": round(low_trade["price"], 2),
+        "high": round(high_trade["price"], 2),
+        "low_date": low_trade["date"].strftime("%Y-%m-%d"),
+        "high_date": high_trade["date"].strftime("%Y-%m-%d"),
+    }
+
+    cache_manager.save_cache(func_name, result, symbol)
+
+    return result

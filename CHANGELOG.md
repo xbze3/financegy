@@ -1,3 +1,17 @@
+## v4.7 - 2026-08-23
+
+### Added
+
+- Added the `get_52_week_range` function to calculate a security's trailing 52-week low and high using its historical trade data.
+- The range is calculated from the security's most recent trade date rather than assuming a fixed number of trading sessions.
+- Added the dates on which the 52-week low and high occurred.
+
+### Notes
+
+- This update does not require any new parsing logic and uses existing historical trade data.
+
+---
+
 ## v4.6 - 2026-04-04
 
 ### Changed

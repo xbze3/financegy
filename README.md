@@ -72,6 +72,9 @@ session_trades = financegy.get_session_trades("1136")
 # Get the date for a specified trading session.
 session_date = financegy.get_session_date("1136")
 
+# Get security's trailing 52-week low and high
+low_and_high = financegy.get_52_week_range("DDL")
+
 # Get trade data for a specific security in a session
 security_session_trade = financegy.get_security_session_trade("DDL", "1136")
 
@@ -172,6 +175,7 @@ financegy.clear_cache(silent=True)
 | `get_active_securities()`                             | Returns active securities (symbol and company name) from the most recent session.    |
 | `get_recent_session()`                                | Returns the most recent trading session number.                                      |
 | `get_session_date()`                                  | Returns the date for a specified trading session.                                    |
+| `get_52_week_range()`                                 | Returns a security's trailing 52-week low and high                                   |
 | `get_security_by_symbol(symbol)`                      | Returns the full security name for a ticker symbol.                                  |
 | `get_recent_trade(symbol)`                            | Returns the most recent trade information for the given security.                    |
 | `get_security_recent_year(symbol)`                    | Returns all trade data for the most recent year available for the selected security. |

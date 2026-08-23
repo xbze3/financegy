@@ -29,6 +29,7 @@ from financegy.modules.securities import (
     get_year_sessions,
     get_traded_years,
     get_year_sessions_snapshot,
+    get_52_week_range
 )
 
 from financegy.modules.market import (
@@ -77,6 +78,7 @@ __all__ = [
     "get_traded_years",
     "get_session_date",
     "get_year_sessions",
+    "get_52_week_range",
     "clear_cache",
     "purge_old_cache_files",
     "save_to_csv",
